@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannabis Strain Rating - BudStats</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo-container img {
+            max-width: 150px;
+            height: auto;
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .rating-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        button {
+            grid-column: span 2;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .strain-list {
+            margin-top: 20px;
+        }
+        .strain-item {
+            padding: 10px;
+            background-color: #f1f1f1;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            position: relative;
+        }
+        .strain-item h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        .strain-item p {
+            margin: 5px 0;
+        }
+        .share-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: #28a745;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logo Section -->
+        <div class="logo-container">
+            <img src="logo_budstats_converted.png" alt="BudStats Logo">
+        </div>
+        
+        <h1>Cannabis Strain Ranking - BudStats</h1>
+        
+        <form id="ratingForm">
+            <div>
+                <label for="strain">Strain Name:</label>
+                <input type="text" id="strain" name="strain" required>
+            </div>
+            
+            <div class="rating-group">
+                <label for="taste">Taste:</label>
+                <input type="number" id="taste" name="taste" min="0.01" max="5.00" step="0.01" required>
+            </div>
+
+            <div class="rating-group">
+                <label for="consistency">Consistency:</label>
+                <input type="number" id="consistency" name="consistency" min="0.01" max="5.00" step="0.01" required>
+            </div>
+
+            <div class="rating-group">
+                <label for="smell">Smell:</label>
+                <input type="number" id="smell" name="smell" min="0.01" max="5.00" step="0.01" required>
+            </div>
+
+            <div class="rating-group">
+                <label for="effect">Effect:</label>
+                <input type="number" id="effect" name="effect" min="0.01" max="5.00" step="0.01" required>
+            </div>
+
+            <button type="submit">Add Strain Ranking</button>
+        </form>
+
+        <h2>Strain Rankings</h2>
+        <div id="strainList" class="strain-list"></div>
+    </div>
+</body>
+</html>
