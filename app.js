@@ -20,10 +20,8 @@ form.addEventListener('submit', (e) => {
         avgRating: avgRating
     });
 
-    // Sort strains by average rating, descending
     strains.sort((a, b) => b.avgRating - a.avgRating);
 
-    // Display updated strain list
     displayStrains();
     form.reset();
 });
@@ -44,6 +42,9 @@ function displayStrains() {
             <p>Effect: ${strain.ratings.effect}</p>
             <span class="material-symbols-outlined share-icon" onclick="shareStrain(${index})">
                 share
+            </span>
+            <span class="material-symbols-outlined delete-icon" onclick="deleteStrain(${index})">
+                delete
             </span>
         `;
         fragment.appendChild(strainItem);
@@ -68,4 +69,9 @@ function shareStrain(index) {
     } else {
         alert('Sharing not supported on this browser.');
     }
+}
+
+function deleteStrain(index) {
+    strains.splice(index, 1); // Entfernt den Strain aus dem Array
+    displayStrains(); // Aktualisiert die Liste der Strains
 }
