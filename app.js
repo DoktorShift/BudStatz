@@ -1,6 +1,9 @@
 const form = document.getElementById('ratingForm');
 const strainList = document.getElementById('strainList');
-let strains = [];
+let strains = JSON.parse(localStorage.getItem('strains')) || []; // Hole Strains aus dem Local Storage oder initialisiere als leeres Array
+
+// Zeige vorhandene Strains an, wenn sie im Local Storage gespeichert sind
+displayStrains();
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -21,6 +24,9 @@ form.addEventListener('submit', (e) => {
     });
 
     strains.sort((a, b) => b.avgRating - a.avgRating);
+
+    // Speichere Strains im Local Storage
+    localStorage.setItem('strains', JSON.stringify(strains));
 
     displayStrains();
     form.reset();
@@ -73,5 +79,9 @@ function shareStrain(index) {
 
 function deleteStrain(index) {
     strains.splice(index, 1); // Entfernt den Strain aus dem Array
+
+    // Aktualisiere Local Storage nach dem Löschen
+    localStorage.setItem('strains', JSON.stringify(strains));
+
     displayStrains(); // Aktualisiert die Liste der Strains
 }
