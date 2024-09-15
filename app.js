@@ -46,18 +46,6 @@ function displayStrains() {
             <p>Consistency: ${strain.ratings.consistency}</p>
             <p>Smell: ${strain.ratings.smell}</p>
             <p>Effect: ${strain.ratings.effect}</p>
-            <div class="radial-progress" data-rating="${strain.avgRating}">
-                <div class="circle">
-                    <div class="mask full">
-                        <div class="fill"></div>
-                    </div>
-                    <div class="mask half">
-                        <div class="fill"></div>
-                        <div class="fill fix"></div>
-                    </div>
-                </div>
-                <div class="inset">${strain.avgRating.toFixed(2)}</div>
-            </div>
             <span class="material-symbols-outlined share-icon" onclick="shareStrain(${index})">
                 share
             </span>
@@ -66,21 +54,9 @@ function displayStrains() {
             </span>
         `;
         fragment.appendChild(strainItem);
-
-        // Aktualisiere den Radial Progress Indicator nach dem Einfügen
-        updateRadialProgress(strain.avgRating, index);
     });
 
     strainList.appendChild(fragment);
-}
-
-function updateRadialProgress(avgRating, index) {
-    const progressElement = document.querySelector(`#strain-${index} .radial-progress`);
-    const circleFill = progressElement.querySelector('.fill');
-
-    // Berechne den Prozentsatz und aktualisiere die Rotation des Füllbereichs
-    const progress = (avgRating / 5) * 100;
-    circleFill.style.transform = `rotate(${(progress / 100) * 180}deg)`;
 }
 
 function shareStrain(index) {
