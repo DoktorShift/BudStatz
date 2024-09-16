@@ -174,11 +174,11 @@ button:hover {
     transition: transform 0.3s;
 }
 
-/* Share button at top-right */
+/* Share button left next to edit */
 .share-icon {
-    top: 15px;
-    right: 15px;
-    color: #f6a031; /* Match the warm tones in the logo */
+    bottom: 15px;
+    right: 85px;
+    color: #4b4b4b; /* Grey-black */
 }
 
 /* Edit button next to delete at bottom-right */
