@@ -19,21 +19,10 @@
         
         <h1>BudStats</h1>
         
-        <!-- Formular mit Strain Name, Typ, Taste, Consistency, Smell und Effect -->
         <form id="ratingForm">
             <div>
                 <label for="strain">Strain Name:</label>
                 <input type="text" id="strain" name="strain" required>
-            </div>
-
-            <div>
-                <label for="type">Art:</label>
-                <select id="type" name="type" required>
-                    <option value="Hybrid">Hybrid</option>
-                    <option value="Indica dominant">Indica dominant</option>
-                    <option value="Sativa">Sativa</option>
-                    <option value="Sativa dominant">Sativa dominant</option>
-                </select>
             </div>
             
             <div class="rating-group">
@@ -60,7 +49,21 @@
         </form>
 
         <h2>Strain Rankings</h2>
-        <div id="strainList" class="strain-list"></div>
+        <div id="strainList" class="strain-list">
+            <!-- Example of how the strain items will be displayed -->
+            <div class="strain-item">
+                <h3>Strain Name (Avg. Rating: 4.5)</h3>
+                <p>Taste: 4.8</p>
+                <p>Consistency: 4.7</p>
+                <p>Smell: 4.6</p>
+                <p>Effect: 4.5</p>
+
+                <!-- Icons für Share, Edit und Delete -->
+                <span class="material-symbols-outlined share-icon">share</span> <!-- Share-Icon links -->
+                <span class="material-symbols-outlined edit-icon">edit</span>  <!-- Edit-Icon -->
+                <span class="material-symbols-outlined delete-icon">delete</span> <!-- Delete-Icon -->
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script> <!-- Hier wird die JavaScript-Datei eingebunden -->
