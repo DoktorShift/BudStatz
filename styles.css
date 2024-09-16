@@ -247,3 +247,34 @@ button:hover {
     color: #333;
     z-index: 1;
 }
+
+/* Footer styling */
+footer {
+    margin-top: 40px; /* Abstand nach oben */
+    padding: 20px;
+    background-color: #232922; /* Gleiche Hintergrundfarbe wie der Container */
+    text-align: center;
+    font-size: 1rem; /* Größe des Textes */
+    color: #f0f6fc; /* Helle Textfarbe passend zum Design */
+}
+
+footer a {
+    color: #f6a031; /* Orange Farbe für den Telegram-Link */
+    text-decoration: none;
+    margin: 0 10px; /* Abstand zwischen den Icons */
+}
+
+footer a:hover {
+    text-decoration: underline; /* Unterstreichung beim Hover über den Link */
+}
+
+footer .icon {
+    width: 24px; /* Icon-Größe */
+    height: 24px;
+    filter: brightness(0) invert(0.7); /* Helleres Grau für die Icons */
+    transition: filter 0.3s ease;
+}
+
+footer .icon:hover {
+    filter: brightness(0) invert(1); /* Icons werden beim Hover weiß */
+}
