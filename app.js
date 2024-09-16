@@ -12,6 +12,7 @@ form.addEventListener('submit', (e) => {
 
     const formData = new FormData(form);
     const strain = formData.get('strain');
+    const type = formData.get('type'); // Get the selected strain type
     const taste = parseFloat(formData.get('taste')) || 0;
     const consistency = parseFloat(formData.get('consistency')) || 0;
     const smell = parseFloat(formData.get('smell')) || 0;
@@ -21,6 +22,7 @@ form.addEventListener('submit', (e) => {
 
     const strainData = {
         name: strain,
+        type: type, // Include the strain type
         ratings: { taste, consistency, smell, effect },
         avgRating: avgRating
     };
@@ -52,7 +54,7 @@ function displayStrains() {
         strainItem.className = 'strain-item';
         strainItem.id = `strain-${index}`;
         strainItem.innerHTML = `
-            <h3>${strain.name} (Avg. Rating: ${strain.avgRating})</h3>
+            <h3>${strain.name} (${strain.type}) (Avg. Rating: ${strain.avgRating})</h3> <!-- Added type to display -->
             <p>Taste: ${strain.ratings.taste}</p>
             <p>Consistency: ${strain.ratings.consistency}</p>
             <p>Smell: ${strain.ratings.smell}</p>
@@ -77,7 +79,7 @@ function displayStrains() {
 function shareStrain(index) {
     const strain = strains[index];
     if (navigator.share) {
-        const shareText = `${strain.name} (Avg. Rating: ${strain.avgRating})\nTaste: ${strain.ratings.taste}\nConsistency: ${strain.ratings.consistency}\nSmell: ${strain.ratings.smell}\nEffect: ${strain.ratings.effect}`;
+        const shareText = `${strain.name} (${strain.type}) (Avg. Rating: ${strain.avgRating})\nTaste: ${strain.ratings.taste}\nConsistency: ${strain.ratings.consistency}\nSmell: ${strain.ratings.smell}\nEffect: ${strain.ratings.effect}`;
 
         navigator.share({
             title: `Strain Rating - ${strain.name}`,
@@ -98,6 +100,7 @@ function editStrain(index) {
 
     // Populate the form with the strain data
     document.getElementById('strain').value = strain.name;
+    document.getElementById('type').value = strain.type; // Populate type dropdown
     document.getElementById('taste').value = strain.ratings.taste;
     document.getElementById('consistency').value = strain.ratings.consistency;
     document.getElementById('smell').value = strain.ratings.smell;
