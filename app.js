@@ -1,18 +1,17 @@
 const form = document.getElementById('ratingForm');
 const strainList = document.getElementById('strainList');
-let strains = JSON.parse(localStorage.getItem('strains')) || []; // Retrieve strains from localStorage or initialize as an empty array
-let editingIndex = null; // Track the index of the strain being edited
+let strains = JSON.parse(localStorage.getItem('strains')) || [];
+let editingIndex = null;
 
-// Display stored strains if they exist in localStorage
+// Zeige gespeicherte Strains an
 displayStrains();
 
-// Form submission event
 form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const formData = new FormData(form);
     const strain = formData.get('strain');
-    const type = formData.get('type');  // Add the type field
+    const type = formData.get('type');  // Erfasse den Typ
     const taste = parseFloat(formData.get('taste')) || 0;
     const consistency = parseFloat(formData.get('consistency')) || 0;
     const smell = parseFloat(formData.get('smell')) || 0;
@@ -22,40 +21,37 @@ form.addEventListener('submit', (e) => {
 
     const strainData = {
         name: strain,
-        type: type,  // Add type to the data
+        type: type,  // Füge den Typ zu den Daten hinzu
         ratings: { taste, consistency, smell, effect },
         avgRating: avgRating
     };
 
     if (editingIndex !== null) {
-        // If we're editing, update the strain
-        strains[editingIndex] = strainData;
-        editingIndex = null; // Reset the index after editing
+        strains[editingIndex] = strainData; // Bearbeiten des Strains
+        editingIndex = null;
     } else {
-        // Otherwise, add a new strain
-        strains.push(strainData);
-        strains.sort((a, b) => b.avgRating - a.avgRating); // Sort strains by rating
+        strains.push(strainData);  // Neuen Strain hinzufügen
+        strains.sort((a, b) => b.avgRating - a.avgRating);
     }
 
-    // Save updated strains to localStorage
+    // Speichere die Strains in localStorage
     localStorage.setItem('strains', JSON.stringify(strains));
 
-    displayStrains(); // Refresh displayed strains
-    form.reset(); // Reset the form
+    displayStrains(); // Liste der Strains aktualisieren
+    form.reset(); // Formular zurücksetzen
 });
 
-// Display strains
 function displayStrains() {
-    strainList.innerHTML = ''; // Clear current list
+    strainList.innerHTML = '';
     const fragment = document.createDocumentFragment();
-    
+
     strains.forEach((strain, index) => {
         const strainItem = document.createElement('div');
         strainItem.className = 'strain-item';
         strainItem.id = `strain-${index}`;
         strainItem.innerHTML = `
             <h3>${strain.name} (Avg. Rating: ${strain.avgRating})</h3>
-            <p>Type: ${strain.type}</p> <!-- Show the strain type -->
+            <p>Type: ${strain.type}</p> <!-- Zeige den Typ an -->
             <p>Taste: ${strain.ratings.taste}</p>
             <p>Consistency: ${strain.ratings.consistency}</p>
             <p>Smell: ${strain.ratings.smell}</p>
@@ -76,7 +72,7 @@ function displayStrains() {
     strainList.appendChild(fragment);
 }
 
-// Share a strain
+// Teilen eines Strains
 function shareStrain(index) {
     const strain = strains[index];
     if (navigator.share) {
@@ -86,39 +82,39 @@ function shareStrain(index) {
             title: `Strain Rating - ${strain.name}`,
             text: shareText,
         }).then(() => {
-            console.log('Strain shared successfully.');
+            console.log('Strain erfolgreich geteilt.');
         }).catch((error) => {
-            console.error('Error sharing strain:', error);
+            console.error('Fehler beim Teilen des Strains:', error);
         });
     } else {
-        alert('Sharing not supported on this browser.');
+        alert('Teilen wird in diesem Browser nicht unterstützt.');
     }
 }
 
-// Edit a strain
+// Bearbeiten eines Strains
 function editStrain(index) {
     const strain = strains[index];
 
-    // Populate the form with the strain data
+    // Formular mit Daten des Strains füllen
     document.getElementById('strain').value = strain.name;
-    document.getElementById('type').value = strain.type; // Populate the type field
+    document.getElementById('type').value = strain.type; // Typ ausfüllen
     document.getElementById('taste').value = strain.ratings.taste;
     document.getElementById('consistency').value = strain.ratings.consistency;
     document.getElementById('smell').value = strain.ratings.smell;
     document.getElementById('effect').value = strain.ratings.effect;
 
-    editingIndex = index; // Set the index of the strain being edited
+    editingIndex = index; // Setze den Index des zu bearbeitenden Strains
 }
 
-// Delete a strain with confirmation
+// Löschen eines Strains
 function deleteStrain(index) {
-    const confirmDelete = confirm("Are you sure you want to delete this strain?");
+    const confirmDelete = confirm("Möchtest du diesen Strain wirklich löschen?");
     if (confirmDelete) {
-        strains.splice(index, 1); // Remove the strain from the array
+        strains.splice(index, 1); // Strain aus Array löschen
 
-        // Update localStorage after deletion
+        // Aktualisiere localStorage nach dem Löschen
         localStorage.setItem('strains', JSON.stringify(strains));
 
-        displayStrains(); // Refresh the displayed list
+        displayStrains(); // Liste der Strains aktualisieren
     }
 }
