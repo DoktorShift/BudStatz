@@ -1,10 +1,12 @@
 const form = document.getElementById('ratingForm');
 const strainList = document.getElementById('strainList');
-let strains = JSON.parse(localStorage.getItem('strains')) || []; // Hole Strains aus dem Local Storage oder initialisiere als leeres Array
+let strains = JSON.parse(localStorage.getItem('strains')) || []; // Retrieve strains from localStorage or initialize as an empty array
+let editingIndex = null; // Track the index of the strain being edited
 
-// Zeige vorhandene Strains an, wenn sie im Local Storage gespeichert sind
+// Display stored strains if they exist in localStorage
 displayStrains();
 
+// Form submission event
 form.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -17,23 +19,32 @@ form.addEventListener('submit', (e) => {
 
     const avgRating = parseFloat(((taste + consistency + smell + effect) / 4).toFixed(2));
 
-    strains.push({
+    const strainData = {
         name: strain,
         ratings: { taste, consistency, smell, effect },
         avgRating: avgRating
-    });
+    };
 
-    strains.sort((a, b) => b.avgRating - a.avgRating);
+    if (editingIndex !== null) {
+        // If we're editing, update the strain
+        strains[editingIndex] = strainData;
+        editingIndex = null; // Reset the index after editing
+    } else {
+        // Otherwise, add a new strain
+        strains.push(strainData);
+        strains.sort((a, b) => b.avgRating - a.avgRating); // Sort strains by rating
+    }
 
-    // Speichere Strains im Local Storage
+    // Save updated strains to localStorage
     localStorage.setItem('strains', JSON.stringify(strains));
 
-    displayStrains();
-    form.reset();
+    displayStrains(); // Refresh displayed strains
+    form.reset(); // Reset the form
 });
 
+// Display strains
 function displayStrains() {
-    strainList.innerHTML = '';
+    strainList.innerHTML = ''; // Clear current list
     const fragment = document.createDocumentFragment();
     
     strains.forEach((strain, index) => {
@@ -49,6 +60,9 @@ function displayStrains() {
             <span class="material-symbols-outlined share-icon" onclick="shareStrain(${index})">
                 share
             </span>
+            <span class="material-symbols-outlined edit-icon" onclick="editStrain(${index})">
+                edit
+            </span>
             <span class="material-symbols-outlined delete-icon" onclick="deleteStrain(${index})">
                 delete
             </span>
@@ -59,6 +73,7 @@ function displayStrains() {
     strainList.appendChild(fragment);
 }
 
+// Share a strain
 function shareStrain(index) {
     const strain = strains[index];
     if (navigator.share) {
@@ -77,11 +92,29 @@ function shareStrain(index) {
     }
 }
 
+// Edit a strain
+function editStrain(index) {
+    const strain = strains[index];
+
+    // Populate the form with the strain data
+    document.getElementById('strain').value = strain.name;
+    document.getElementById('taste').value = strain.ratings.taste;
+    document.getElementById('consistency').value = strain.ratings.consistency;
+    document.getElementById('smell').value = strain.ratings.smell;
+    document.getElementById('effect').value = strain.ratings.effect;
+
+    editingIndex = index; // Set the index of the strain being edited
+}
+
+// Delete a strain with confirmation
 function deleteStrain(index) {
-    strains.splice(index, 1); // Entfernt den Strain aus dem Array
+    const confirmDelete = confirm("Are you sure you want to delete this strain?");
+    if (confirmDelete) {
+        strains.splice(index, 1); // Remove the strain from the array
 
-    // Aktualisiere Local Storage nach dem Löschen
-    localStorage.setItem('strains', JSON.stringify(strains));
+        // Update localStorage after deletion
+        localStorage.setItem('strains', JSON.stringify(strains));
 
-    displayStrains(); // Aktualisiert die Liste der Strains
+        displayStrains(); // Refresh the displayed list
+    }
 }
