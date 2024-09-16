@@ -149,7 +149,7 @@ button:hover {
 }
 
 .share-icon, .delete-icon, .edit-icon {
-    font-size: 13px;
+    font-size: 14px;
     position: absolute;
     cursor: pointer;
     transition: transform 0.3s;
@@ -157,21 +157,21 @@ button:hover {
 
 /* Share button left next to edit */
 .share-icon {
-    bottom: 10px;
+    bottom: 11px;
     right: 85px; /* Positioniert den Share-Button links neben dem Edit-Icon */
     color: #4b4b4b; /* Grau-schwarz für den Share-Button */
 }
 
 /* Edit button next to delete at bottom-right */
 .edit-icon {
-    bottom: 10px;
+    bottom: 11px;
     right: 50px; /* Positioned next to delete button */
     color: #f6a031; /* Orange for the edit button */
 }
 
 /* Delete button at bottom-right */
 .delete-icon {
-    bottom: 10px;
+    bottom: 11px;
     right: 15px; /* Positioned to the far right */
     color: #ff5c5c; /* Red for delete */
 }
