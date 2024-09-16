@@ -1,17 +1,18 @@
 const form = document.getElementById('ratingForm');
 const strainList = document.getElementById('strainList');
-let strains = JSON.parse(localStorage.getItem('strains')) || [];
-let editingIndex = null;
+let strains = JSON.parse(localStorage.getItem('strains')) || []; // Retrieve strains from localStorage or initialize as an empty array
+let editingIndex = null; // Track the index of the strain being edited
 
-// Zeige gespeicherte Strains an
+// Display stored strains if they exist in localStorage
 displayStrains();
 
+// Form submission event
 form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const formData = new FormData(form);
     const strain = formData.get('strain');
-    const type = formData.get('type');  // Erfasse den Typ
+    const type = formData.get('type');  // Hier wird das "Art" Feld verarbeitet
     const taste = parseFloat(formData.get('taste')) || 0;
     const consistency = parseFloat(formData.get('consistency')) || 0;
     const smell = parseFloat(formData.get('smell')) || 0;
@@ -21,37 +22,40 @@ form.addEventListener('submit', (e) => {
 
     const strainData = {
         name: strain,
-        type: type,  // Füge den Typ zu den Daten hinzu
+        type: type,  // "Art" zum Datenobjekt hinzufügen
         ratings: { taste, consistency, smell, effect },
         avgRating: avgRating
     };
 
     if (editingIndex !== null) {
-        strains[editingIndex] = strainData; // Bearbeiten des Strains
-        editingIndex = null;
+        // Wenn wir bearbeiten, aktualisieren wir den Strain
+        strains[editingIndex] = strainData;
+        editingIndex = null; // Index zurücksetzen nach dem Bearbeiten
     } else {
-        strains.push(strainData);  // Neuen Strain hinzufügen
-        strains.sort((a, b) => b.avgRating - a.avgRating);
+        // Ansonsten einen neuen Strain hinzufügen
+        strains.push(strainData);
+        strains.sort((a, b) => b.avgRating - a.avgRating); // Strains nach Bewertung sortieren
     }
 
-    // Speichere die Strains in localStorage
+    // Speichere die aktualisierten Strains im LocalStorage
     localStorage.setItem('strains', JSON.stringify(strains));
 
-    displayStrains(); // Liste der Strains aktualisieren
+    displayStrains(); // Aktualisierte Strains anzeigen
     form.reset(); // Formular zurücksetzen
 });
 
+// Strains anzeigen
 function displayStrains() {
-    strainList.innerHTML = '';
+    strainList.innerHTML = ''; // Liste leeren
     const fragment = document.createDocumentFragment();
-
+    
     strains.forEach((strain, index) => {
         const strainItem = document.createElement('div');
         strainItem.className = 'strain-item';
         strainItem.id = `strain-${index}`;
         strainItem.innerHTML = `
             <h3>${strain.name} (Avg. Rating: ${strain.avgRating})</h3>
-            <p>Type: ${strain.type}</p> <!-- Zeige den Typ an -->
+            <p>Type: ${strain.type}</p> <!-- Zeigt das Feld "Art" an -->
             <p>Taste: ${strain.ratings.taste}</p>
             <p>Consistency: ${strain.ratings.consistency}</p>
             <p>Smell: ${strain.ratings.smell}</p>
@@ -72,7 +76,7 @@ function displayStrains() {
     strainList.appendChild(fragment);
 }
 
-// Teilen eines Strains
+// Einen Strain teilen
 function shareStrain(index) {
     const strain = strains[index];
     if (navigator.share) {
@@ -91,30 +95,30 @@ function shareStrain(index) {
     }
 }
 
-// Bearbeiten eines Strains
+// Einen Strain bearbeiten
 function editStrain(index) {
     const strain = strains[index];
 
-    // Formular mit Daten des Strains füllen
+    // Formular mit den Strain-Daten befüllen
     document.getElementById('strain').value = strain.name;
-    document.getElementById('type').value = strain.type; // Typ ausfüllen
+    document.getElementById('type').value = strain.type; // Feld "Art" befüllen
     document.getElementById('taste').value = strain.ratings.taste;
     document.getElementById('consistency').value = strain.ratings.consistency;
     document.getElementById('smell').value = strain.ratings.smell;
     document.getElementById('effect').value = strain.ratings.effect;
 
-    editingIndex = index; // Setze den Index des zu bearbeitenden Strains
+    editingIndex = index; // Index des zu bearbeitenden Strains setzen
 }
 
-// Löschen eines Strains
+// Einen Strain löschen mit Bestätigung
 function deleteStrain(index) {
     const confirmDelete = confirm("Möchtest du diesen Strain wirklich löschen?");
     if (confirmDelete) {
-        strains.splice(index, 1); // Strain aus Array löschen
+        strains.splice(index, 1); // Strain aus dem Array entfernen
 
-        // Aktualisiere localStorage nach dem Löschen
+        // Aktualisiere LocalStorage nach dem Löschen
         localStorage.setItem('strains', JSON.stringify(strains));
 
-        displayStrains(); // Liste der Strains aktualisieren
+        displayStrains(); // Liste aktualisieren
     }
 }
