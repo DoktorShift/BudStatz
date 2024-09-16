@@ -148,25 +148,34 @@ button:hover {
     font-size: 2rem;
 }
 
-.share-icon, .delete-icon {
+.share-icon, .delete-icon, .edit-icon {
     position: absolute;
     cursor: pointer;
     transition: transform 0.3s;
 }
 
+/* Share button at top-right */
 .share-icon {
     top: 15px;
     right: 15px;
     color: #f6a031; /* Match the warm tones in the logo */
 }
 
-.delete-icon {
+/* Edit button next to delete at bottom-right */
+.edit-icon {
     bottom: 15px;
-    right: 15px;
-    color: #ff5c5c;
+    right: 50px; /* Positioned next to delete button */
+    color: #f6a031; /* Orange for the edit button */
 }
 
-.share-icon:hover, .delete-icon:hover {
+/* Delete button at bottom-right */
+.delete-icon {
+    bottom: 15px;
+    right: 15px; /* Positioned to the far right */
+    color: #ff5c5c; /* Red for delete */
+}
+
+.share-icon:hover, .edit-icon:hover, .delete-icon:hover {
     transform: scale(1.2);
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
