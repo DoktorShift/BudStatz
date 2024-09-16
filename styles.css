@@ -149,7 +149,7 @@ button:hover {
 }
 
 .share-icon, .delete-icon, .edit-icon {
-    font-size: 10px;
+    font-size: 12px;
     position: absolute;
     cursor: pointer;
     transition: transform 0.3s;
