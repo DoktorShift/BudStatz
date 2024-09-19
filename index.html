@@ -48,23 +48,37 @@
             <button type="submit">Add Strain Ranking</button>
         </form>
 
-        <h2>Strain Rankings</h2>
-        <div id="strainList" class="strain-list">
-            <!-- Example of how the strain items will be displayed -->
-            <div class="strain-item">
-                <h3>Strain Name (Avg. Rating: 4.5)</h3>
-                <p>Taste: 4.8</p>
-                <p>Consistency: 4.7</p>
-                <p>Smell: 4.6</p>
-                <p>Effect: 4.5</p>
+        <div class="strain-item">
+    <h3>${strain.name} (Avg. Rating: ${strain.avgRating})</h3>
+    <p>Taste: ${strain.ratings.taste}</p>
+    <p>Consistency: ${strain.ratings.consistency}</p>
+    <p>Smell: ${strain.ratings.smell}</p>
+    <p>Effect: ${strain.ratings.effect}</p>
 
-                <!-- Icons für Share, Edit und Delete -->
-                <span class="material-symbols-outlined share-icon">share</span> <!-- Share-Icon links -->
-                <span class="material-symbols-outlined edit-icon">edit</span>  <!-- Edit-Icon -->
-                <span class="material-symbols-outlined delete-icon">delete</span> <!-- Delete-Icon -->
+    <!-- Radial Progress Bar -->
+    <div class="skill">
+        <div class="outer">
+            <div class="inner">
+                <div id="number-${index}">
+                    ${strain.avgRating}
+                </div>
             </div>
         </div>
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="80px" height="80px">
+            <defs>
+                <linearGradient id="GradientColor">
+                    <stop offset="0%" stop-color="#DA22FF" />
+                    <stop offset="100%" stop-color="#9733EE" />
+                </linearGradient>
+            </defs>
+            <circle cx="40" cy="40" r="35" stroke-linecap="round" />
+        </svg>
     </div>
+<!-- Icons for Share, Edit, and Delete -->
+    <span class="material-symbols-outlined share-icon" onclick="shareStrain(${index})">share</span>
+    <span class="material-symbols-outlined edit-icon" onclick="editStrain(${index})">edit</span>
+    <span class="material-symbols-outlined delete-icon" onclick="deleteStrain(${index})">delete</span>
+</div>
 
 <!-- Footer mit Verlinkung auf Telegram und GitHub -->
 <footer>
