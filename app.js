@@ -121,31 +121,30 @@ function deleteStrain(index) {
 
 // Add radial progress function
 document.addEventListener("DOMContentLoaded", function () {
-    function updateProgress(rating) {
-        const circle = document.querySelector('circle');
-        const number = document.getElementById('number');
-        const percentage = (rating / 5) * 100;
-        const offset = 450 - (450 * percentage) / 100;
+function updateProgress(rating) {
+    const circle = document.querySelector('circle');
+    const number = document.getElementById('number');
+    const percentage = (rating / 5) * 100;
+    const offset = 440 - (440 * percentage) / 100;
 
-        // Setze den Text in der Mitte mit zwei Dezimalstellen
-        number.textContent = rating.toFixed(2);
+    // Setze den Text in der Mitte mit zwei Dezimalstellen
+    number.textContent = rating.toFixed(2);
 
-        // Update den Kreis und die Farbe entsprechend der Bewertung
-        circle.style.strokeDashoffset = offset;
+    // Update den Kreis und die Farbe entsprechend der Bewertung
+    circle.style.strokeDashoffset = offset;
 
-        if (rating <= 1.0) {
-            circle.style.stroke = 'darkred'; // Tiefrot
-        } else if (rating <= 2.5) {
-            circle.style.stroke = 'red'; // Rötlich
-        } else if (rating <= 3.5) {
-            circle.style.stroke = 'orange'; // Orangeton
-        } else if (rating <= 4.5) {
-            circle.style.stroke = 'limegreen'; // Limegrün
-        } else {
-            circle.style.stroke = 'green'; // Grün
-        }
+    if (rating <= 1.0) {
+        circle.style.stroke = 'darkred'; // Tiefrot
+    } else if (rating <= 2.5) {
+        circle.style.stroke = 'red'; // Rötlich
+    } else if (rating <= 3.5) {
+        circle.style.stroke = 'orange'; // Orangeton
+    } else if (rating <= 4.5) {
+        circle.style.stroke = 'limegreen'; // Limegrün
+    } else {
+        circle.style.stroke = 'green'; // Grün
     }
+}
 
-    // Beispiel: Setze die Bewertung auf 3.75
-    updateProgress(3.75);
-});
+// Beispiel: Setze die Bewertung auf 3.75
+updateProgress(3.75);
