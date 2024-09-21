@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BudStatz</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="stylesheet" href="styles.css"> <!-- Hier wird die CSS-Datei eingebunden -->
 
     <!-- Favicon für mobile Geräte -->
-    <link rel="apple-touch-icon" href="https://cdn.discordapp.com/attachments/740634453805891710/1285025208004247633/logo_budstats_transparent.png?ex=66e8c47c&is=66e772fc&hm=d1fd838f19d3d3cd22d7dfa975457bc3cd5a46665be4e50f9652047b7404185b&">
+    <link rel="apple-touch-icon" href="https://cdn.discordapp.com/attachments/740634453805891710/1285025208004247633/logo_budstats_transparent.png">
 </head>
 <body>
     <div class="container">
         <!-- Logo Section -->
         <div class="logo-container">
-            <img src="https://cdn.discordapp.com/attachments/740634453805891710/1285025208004247633/logo_budstats_transparent.png?ex=66e8c47c&is=66e772fc&hm=d1fd838f19d3d3cd22d7dfa975457bc3cd5a46665be4e50f9652047b7404185b&" alt="BudStats Logo">
+            <img src="https://cdn.discordapp.com/attachments/740634453805891710/1285025208004247633/logo_budstats_transparent.png" alt="BudStats Logo">
         </div>
         
         <h1>BudStats</h1>
@@ -47,56 +47,23 @@
 
             <button type="submit">Add Strain Ranking</button>
         </form>
-
-        <h2>Strain Rankings</h2>
-        <div id="strainList" class="strain-list">
-            <!-- Example of how the strain items will be displayed -->
-            <div class="strain-item">
-                <h3>Strain Name (Avg. Rating: 4.5)</h3>
-                <p>Taste: 4.8</p>
-                <p>Consistency: 4.7</p>
-                <p>Smell: 4.6</p>
-                <p>Effect: 4.5</p>
-
-                <div class="skill">
-                <div class="outer">
-                <div class="inner">
-                <div id="number">
-                  0.00
-                </div>
-                </div>
-                </div>
-
-    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="160px" height="160px">
-      <defs>
-        <linearGradient id="GradientColor">
-          <stop offset="0%" stop-color="#DA22FF" />
-          <stop offset="100%" stop-color="#9733EE" />
-        </linearGradient>
-      </defs>
-      <circle cx="80" cy="80" r="70" stroke-linecap="round" />
-    </svg>
-                
-                <!-- Icons für Share, Edit und Delete -->
-                <span class="material-symbols-outlined share-icon">share</span> <!-- Share-Icon links -->
-                <span class="material-symbols-outlined edit-icon">edit</span>  <!-- Edit-Icon -->
-                <span class="material-symbols-outlined delete-icon">delete</span> <!-- Delete-Icon -->
-            </div>
-        </div>
+        
+        <!-- Hier werden die Strain-Items angezeigt -->
+        <div id="strainList" class="strain-list"></div>
     </div>
 
-<!-- Footer mit Verlinkung auf Telegram und GitHub -->
-<footer>
-    <p>Made 🥦 by <strong>DrShift</strong></p>
-    <a href="https://t.me/rotation77" target="_blank">
-        <!-- Telegram-Logo (Alternative Quelle) -->
-        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" class="icon">
-    </a>
-    <a href="https://github.com/DoktorShift" target="_blank">
-        <!-- GitHub-Logo (SVG) -->
-        <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub" class="icon">
-    </a>
-</footer>
+    <!-- Footer mit Verlinkung auf Telegram und GitHub -->
+    <footer>
+        <p>Made 🥦 by <strong>DrShift</strong></p>
+        <a href="https://t.me/rotation77" target="_blank">
+            <!-- Telegram-Logo (Alternative Quelle) -->
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" class="icon">
+        </a>
+        <a href="https://github.com/DoktorShift" target="_blank">
+            <!-- GitHub-Logo (SVG) -->
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub" class="icon">
+        </a>
+    </footer>
 
     <script src="app.js"></script> <!-- Hier wird die JavaScript-Datei eingebunden -->
 </body>
