@@ -59,7 +59,7 @@ input[type="number"] {
     padding: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #333;
+    background-color: #1e1e1e1e;
     color: #fff;
     box-shadow: inset 4px 4px 6px -1px rgba(0, 0, 0, 0.5),
                 inset -4px -4px 6px -1px rgba(255, 255, 255, 0.1);
@@ -151,13 +151,13 @@ footer {
     text-align: center;
     padding: 20px;
     background-color: #1a1f1a;
-    margin-top: 30px;
+    margin-top: 20px;
     box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.5),
                 -6px -6px 10px -1px rgba(255, 255, 255, 0.1);
 }
 
 footer p {
-    margin: 0;
+    margin: 5;
     color: #878484;
 }
 
