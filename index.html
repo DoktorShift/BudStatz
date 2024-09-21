@@ -47,51 +47,25 @@
 
             <button type="submit">Add Strain Ranking</button>
         </form>
+        
+        <!-- Hier werden die Strain-Items angezeigt -->
+        <div id="strainList" class="strain-list"></div>
 
-        <div class="strain-item">
-    <h3>${strain.name} (Avg. Rating: ${strain.avgRating})</h3>
-    <p>Taste: ${strain.ratings.taste}</p>
-    <p>Consistency: ${strain.ratings.consistency}</p>
-    <p>Smell: ${strain.ratings.smell}</p>
-    <p>Effect: ${strain.ratings.effect}</p>
-
-    <!-- Radial Progress Bar -->
-    <div class="skill">
-        <div class="outer">
-            <div class="inner">
-                <div id="number-${index}">
-                    ${strain.avgRating}
-                </div>
-            </div>
-        </div>
-        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="80px" height="80px">
-            <defs>
-                <linearGradient id="GradientColor">
-                    <stop offset="0%" stop-color="#DA22FF" />
-                    <stop offset="100%" stop-color="#9733EE" />
-                </linearGradient>
-            </defs>
-            <circle cx="40" cy="40" r="35" stroke-linecap="round" />
-        </svg>
+        <!-- Radial Progress Bar und Icons sollten über JS generiert werden -->
     </div>
-<!-- Icons for Share, Edit, and Delete -->
-    <span class="material-symbols-outlined share-icon" onclick="shareStrain(${index})">share</span>
-    <span class="material-symbols-outlined edit-icon" onclick="editStrain(${index})">edit</span>
-    <span class="material-symbols-outlined delete-icon" onclick="deleteStrain(${index})">delete</span>
-</div>
 
-<!-- Footer mit Verlinkung auf Telegram und GitHub -->
-<footer>
-    <p>Made 🥦 by <strong>DrShift</strong></p>
-    <a href="https://t.me/rotation77" target="_blank">
-        <!-- Telegram-Logo (Alternative Quelle) -->
-        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" class="icon">
-    </a>
-    <a href="https://github.com/DoktorShift" target="_blank">
-        <!-- GitHub-Logo (SVG) -->
-        <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub" class="icon">
-    </a>
-</footer>
+    <!-- Footer mit Verlinkung auf Telegram und GitHub -->
+    <footer>
+        <p>Made 🥦 by <strong>DrShift</strong></p>
+        <a href="https://t.me/rotation77" target="_blank">
+            <!-- Telegram-Logo (Alternative Quelle) -->
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" class="icon">
+        </a>
+        <a href="https://github.com/DoktorShift" target="_blank">
+            <!-- GitHub-Logo (SVG) -->
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub" class="icon">
+        </a>
+    </footer>
 
     <script src="app.js"></script> <!-- Hier wird die JavaScript-Datei eingebunden -->
 </body>
