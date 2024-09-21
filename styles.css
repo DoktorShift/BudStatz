@@ -64,19 +64,22 @@ input[type="number"] {
 }
 
 button {
-    padding: 12px;
-    background: linear-gradient(90deg, #f7931a, #ffcc00);
-    color: #ffffff;
+    grid-column: span 2;
+    padding: 15px;
+    background: linear-gradient(145deg, #344033, #f6a031); /* Earthy green to orange gradient */
+    color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 600;
     cursor: pointer;
-    box-shadow: 4px 4px 6px -1px rgba(0, 0, 0, 0.5),
-                -4px -4px 6px -1px rgba(255, 255, 255, 0.1);
-    font-size: 1em;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
+
 button:hover {
-    background: linear-gradient(90deg, #f67e12, #ffa600);
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(246, 160, 49, 0.3); /* Soft orange glow */
 }
 
 /* Strain-Liste */
