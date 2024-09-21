@@ -51,12 +51,35 @@ function displayStrains() {
         const strainItem = document.createElement('div');
         strainItem.className = 'strain-item';
         strainItem.id = `strain-${index}`;
-        strainItem.innerHTML = `
-            <h3>${strain.name} (Avg. Rating: ${strain.avgRating})</h3>
-            <p>Taste: ${strain.ratings.taste}</p>
-            <p>Consistency: ${strain.ratings.consistency}</p>
-            <p>Smell: ${strain.ratings.smell}</p>
-            <p>Effect: ${strain.ratings.effect}</p>
+
+        // Create the radial progress bar element
+        const radialProgress = document.createElement('div');
+        radialProgress.className = 'radial-progress';
+
+        radialProgress.innerHTML = `
+            <div class="inner">
+                <div id="number">${strain.avgRating.toFixed(2)}</div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                <defs>
+                    <linearGradient id="GradientColor">
+                        <stop offset="0%" stop-color="#DA22FF" />
+                        <stop offset="100%" stop-color="#9733EE" />
+                    </linearGradient>
+                </defs>
+                <circle cx="80" cy="80" r="70" stroke-linecap="round" />
+            </svg>
+        `;
+
+        // Create the content of the strain item
+        const strainContent = `
+    <div class="strain-details">
+        <h3>${strain.name}</h3>
+        <p>Taste: ${strain.ratings.taste}</p>
+        <p>Consistency: ${strain.ratings.consistency}</p>
+        <p>Smell: ${strain.ratings.smell}</p>
+        <p>Effect: ${strain.ratings.effect}</p>
+        <div class="strain-icons">
             <span class="material-symbols-outlined share-icon" onclick="shareStrain(${index})">
                 share
             </span>
@@ -66,18 +89,59 @@ function displayStrains() {
             <span class="material-symbols-outlined delete-icon" onclick="deleteStrain(${index})">
                 delete
             </span>
-        `;
+        </div>
+    </div>
+`;
+
+        strainItem.innerHTML = strainContent;
+
+        // Append the radial progress bar to the strain item
+        strainItem.appendChild(radialProgress);
+
+        // Append the strain item to the fragment
         fragment.appendChild(strainItem);
+
+        // Initialize the radial progress bar
+        updateProgress(radialProgress, strain.avgRating);
     });
 
     strainList.appendChild(fragment);
+}
+
+// Function to update the radial progress bar
+function updateProgress(element, rating) {
+    const circle = element.querySelector('circle');
+    const number = element.querySelector('#number');
+    const maxRating = 5;
+    const percentage = (rating / maxRating) * 100;
+    const radius = circle.r.baseVal.value;
+    const circumference = 2 * Math.PI * radius;
+    const offset = circumference - (circumference * percentage) / 100;
+
+    number.textContent = rating.toFixed(2);
+
+    circle.style.strokeDasharray = `${circumference}`;
+    circle.style.strokeDashoffset = offset;
+
+    // Update the circle's stroke color based on the rating
+    if (rating <= 1.0) {
+        circle.style.stroke = 'darkred';
+    } else if (rating <= 2.5) {
+        circle.style.stroke = 'red';
+    } else if (rating <= 3.5) {
+        circle.style.stroke = 'orange';
+    } else if (rating <= 4.5) {
+        circle.style.stroke = 'limegreen';
+    } else {
+        circle.style.stroke = 'green';
+    }
 }
 
 // Share a strain
 function shareStrain(index) {
     const strain = strains[index];
     if (navigator.share) {
-        const shareText = `${strain.name} (Avg. Rating: ${strain.avgRating})\nTaste: ${strain.ratings.taste}\nConsistency: ${strain.ratings.consistency}\nSmell: ${strain.ratings.smell}\nEffect: ${strain.ratings.effect}`;
+        const shareText = `${strain.name} (Avg. Rating: ${strain.avgRating.toFixed(2)})\nTaste: ${strain.ratings.taste}\nConsistency: ${strain.ratings.consistency}\nSmell: ${strain.ratings.smell}\nEffect: ${strain.ratings.effect}`;
 
         navigator.share({
             title: `Strain Rating - ${strain.name}`,

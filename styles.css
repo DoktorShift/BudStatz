@@ -1,4 +1,4 @@
-/* Body styling remains the same */
+/* Allgemeine Stile */
 body {
     font-family: 'Poppins', sans-serif;
     background-color: #1a1f1a; /* Slightly warmer dark green */
@@ -8,79 +8,61 @@ body {
     overflow-x: hidden;
 }
 
-/* Styling for Titles - Clean, Simple, and Consistent */
-h1, h2 {
-    font-family: 'Quicksand', sans-serif; /* Soft, rounded font */
-    color: #f6a031; /* Warm orange to match logo */
-    text-align: center;
-    margin: 0 0 20px 0;
-    font-size: 2.8rem; /* Slightly larger for emphasis */
-    text-transform: uppercase;
-    letter-spacing: 1.5px; /* Consistent letter spacing */
-    font-weight: 600; /* Bold, but not overwhelming */
-}
-
-/* The rest of the design remains unchanged */
+/* Container und Layout */
 .container {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 30px;
-    background: linear-gradient(145deg, #232922, #1b1f1b); /* Dark earthy greens */
-    border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #1a1f1a;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.6), 
+                -6px -6px 10px -1px rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
 }
 
+h1 {
+    text-align: center;
+    color: #f6a031;
+    font-size: 2em;
+}
+
+/* Logo Section */
 .logo-container {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .logo-container img {
-    max-width: 200px;
+    width: 100px;
     height: auto;
-    animation: wipLogo 3s infinite ease-in-out; /* Slower wip animation */
 }
 
-@keyframes wipLogo {
-    0%, 100% {
-        transform: rotate(0deg);
-    }
-    50% {
-        transform: rotate(2deg); /* Subtle wip effect */
-    }
-}
-
+/* Formularstile */
 form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 20px;
-    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+form div {
+    display: flex;
+    flex-direction: column;
 }
 
 label {
-    display: block;
-    font-weight: 600;
-    color: #f6a031; /* Match the warm tones in the logo */
     margin-bottom: 5px;
+    color: #f7931a;
 }
 
-input[type="text"], input[type="number"] {
-    width: 100%;
+input[type="text"],
+input[type="number"] {
     padding: 10px;
-    background-color: #232922;
-    color: #f0f6fc;
-    border: 1px solid #3b3f3b;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: background-color 0.3s, transform 0.3s;
-    box-sizing: border-box;
-}
-
-input[type="text"]:focus, input[type="number"]:focus {
-    background-color: #2b312b;
-    border-color: #f6a031;
-    transform: scale(1.02);
-    outline: none;
+    border: none;
+    border-radius: 5px;
+    background-color: #1e1e1e1e;
+    color: #fff;
+    box-shadow: inset 4px 4px 6px -1px rgba(0, 0, 0, 0.5),
+                inset -4px -4px 6px -1px rgba(255, 255, 255, 0.1);
 }
 
 button {
@@ -96,185 +78,153 @@ button {
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
+
 button:hover {
     transform: scale(1.05);
     box-shadow: 0 8px 15px rgba(246, 160, 49, 0.3); /* Soft orange glow */
 }
 
+/* Strain-Liste */
 .strain-list {
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
 .strain-item {
+    background-color: #1e1e1e1e;
     padding: 20px;
-    background: linear-gradient(145deg, #2e352e, #1f241f); /* Slightly lighter earthy tones */
-    margin-bottom: 20px;
-    border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    margin-bottom: 15px;
+    border-radius: 10px;
     position: relative;
-    animation: fadeInStrain 0.5s ease-in-out;
-}
-
-@keyframes fadeInStrain {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.5),
+                -6px -6px 10px -1px rgba(255, 255, 255, 0.1);
 }
 
 .strain-item h3 {
-    margin: 0 0 10px 0;
-    font-size: 1.5rem;
-    color: #f0f6fc;
-    font-weight: 700;
+    margin-top: 0;
+    color: #f6a031;
 }
 
 .strain-item p {
     margin: 5px 0;
-    color: #c9d1d9;
-    font-size: 1rem;
+    color: #cccccc;
 }
 
+/* Icons */
 .material-symbols-outlined {
-    font-variation-settings:
-    'FILL' 0,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 24;
-    font-size: 2rem;
-}
-
-.share-icon, .delete-icon, .edit-icon {
-    font-size: 14px;
-    position: absolute;
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    color: #cccccc;
     cursor: pointer;
-    transition: transform 0.3s;
+    margin-right: 10px;
 }
 
-/* Share button left next to edit */
+.material-symbols-outlined:hover {
+    color: #f7931a;
+}
+
 .share-icon {
-    bottom: 11px;
-    right: 85px; /* Positioniert den Share-Button links neben dem Edit-Icon */
-    color: #4b4b4b; /* Grau-schwarz für den Share-Button */
+    position: absolute;
+    top: 20px;
+    right: 80px;
 }
 
-/* Edit button next to delete at bottom-right */
 .edit-icon {
-    bottom: 11px;
-    right: 50px; /* Positioned next to delete button */
-    color: #f6a031; /* Orange for the edit button */
+    position: absolute;
+    top: 20px;
+    right: 50px;
 }
 
-/* Delete button at bottom-right */
 .delete-icon {
-    bottom: 11px;
-    right: 15px; /* Positioned to the far right */
-    color: #ff5c5c; /* Red for delete */
-}
-
-.share-icon:hover, .edit-icon:hover, .delete-icon:hover {
-    transform: scale(1.2);
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-}
-
-/* Radial Progress Indicator Styles */
-.radial-progress {
-    width: 80px;
-    height: 80px;
     position: absolute;
-    top: 50%;
-    right: 110px;
-    transform: translateY(-50%);
+    top: 20px;
+    right: 20px;
 }
 
-.circle {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    position: relative;
-    background-color: transparent;
-}
-
-.mask, .fill {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    position: absolute;
-    clip: rect(0px, 40px, 80px, 0px);
-}
-
-.mask.full, .fill {
-    transform: rotate(0deg);
-    background-color: transparent;
-    transition: transform 0.5s ease-in-out;
-}
-
-.mask.half {
-    clip: rect(0px, 80px, 80px, 40px);
-}
-
-.fill {
-    background: conic-gradient(
-        limegreen 0%,
-        yellow 50%,
-        orange 70%,
-        red 100%
-    );
-}
-
-.fill.fix {
-    clip: rect(0px, 40px, 80px, 0px);
-    background-color: inherit;
-}
-
-.inset {
-    width: 60px;
-    height: 60px;
-    background-color: white;
-    border-radius: 50%;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: bold;
-    color: #333;
-    z-index: 1;
-}
-
-/* Footer styling */
+/* Footer */
 footer {
-    margin-top: 40px; /* Abstand nach oben */
-    padding: 20px;
-    background-color: #232922; /* Gleiche Hintergrundfarbe wie der Container */
     text-align: center;
-    font-size: 1rem; /* Größe des Textes */
-    color: #f0f6fc; /* Helle Textfarbe passend zum Design */
+    padding: 20px;
+    background-color: #1a1f1a;
+    margin-top: 20px;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.5),
+                -6px -6px 10px -1px rgba(255, 255, 255, 0.1);
+}
+
+footer p {
+    margin: 5;
+    color: #878484;
 }
 
 footer a {
-    color: #f6a031; /* Orange Farbe für den Telegram-Link */
-    text-decoration: none;
-    margin: 0 10px; /* Abstand zwischen den Icons */
-}
-
-footer a:hover {
-    text-decoration: underline; /* Unterstreichung beim Hover über den Link */
+    margin: 0 10px;
+    color: #1a1f1a;
 }
 
 footer .icon {
-    width: 24px; /* Icon-Größe */
+    width: 24px;
     height: 24px;
-    transition: transform 0.3s ease; /* Animation bei Hover */
+    vertical-align: middle;
 }
 
-footer .icon:hover {
-    transform: scale(1.1); /* Icons werden beim Hover leicht vergrößert */
+/* Radial Progress Bar */
+.radial-progress {
+    width: 160px;
+    height: 160px;
+    position: relative;
+    margin: 20px auto;
 }
 
+.radial-progress svg {
+    width: 160px;
+    height: 160px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: rotate(-90deg);
+}
+
+.radial-progress circle {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke-width: 20;
+    stroke-linecap: round;
+    stroke-dasharray: 450;
+    stroke-dashoffset: 450;
+    transition: stroke-dashoffset 2s linear, stroke 0.5s;
+}
+
+.radial-progress circle.bg {
+    stroke: #2d2d2d;
+}
+
+.radial-progress circle.progress {
+    stroke: url(#GradientColor);
+}
+
+.radial-progress .inner {
+    width: 120px;
+    height: 120px;
+    background-color: #1a1f1a;
+    border-radius: 50%;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    box-shadow: inset 4px 4px 6px -1px rgba(0, 0, 0, 0.5),
+                inset -4px -4px 6px -1px rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.radial-progress .inner #number {
+    font-weight: 600;
+    color: #f6a031;
+    font-size: 24px;
+}
