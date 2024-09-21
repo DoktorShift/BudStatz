@@ -102,6 +102,8 @@ button:hover {
 .strain-item h3 {
     margin-top: 0;
     color: #f6a031;
+    word-wrap: break-word; /* Lässt den Text umbrechen */
+    max-width: 80%; /* Passt die Breite des Strain-Namens an */
 }
 
 .strain-item p {
