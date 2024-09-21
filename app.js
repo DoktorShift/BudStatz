@@ -51,8 +51,30 @@ function displayStrains() {
         const strainItem = document.createElement('div');
         strainItem.className = 'strain-item';
         strainItem.id = `strain-${index}`;
-        strainItem.innerHTML = `
-            <h3>${strain.name} (Avg. Rating: ${strain.avgRating})</h3>
+
+        // Create the radial progress bar element
+        const radialProgress = document.createElement('div');
+        radialProgress.className = 'radial-progress';
+        radialProgress.setAttribute('data-percentage', strain.avgRating);
+
+        radialProgress.innerHTML = `
+            <div class="circle">
+                <div class="mask full">
+                    <div class="fill"></div>
+                </div>
+                <div class="mask half">
+                    <div class="fill"></div>
+                    <div class="fill fix"></div>
+                </div>
+            </div>
+            <div class="inset">
+                <div class="percentage">${strain.avgRating * 20}%</div>
+            </div>
+        `;
+
+        // Create the content of the strain item
+        const strainContent = `
+            <h3>${strain.name}</h3>
             <p>Taste: ${strain.ratings.taste}</p>
             <p>Consistency: ${strain.ratings.consistency}</p>
             <p>Smell: ${strain.ratings.smell}</p>
@@ -67,10 +89,44 @@ function displayStrains() {
                 delete
             </span>
         `;
+
+        strainItem.innerHTML = strainContent;
+
+        // Append the radial progress bar to the strain item
+        strainItem.appendChild(radialProgress);
+
+        // Append the strain item to the fragment
         fragment.appendChild(strainItem);
+
+        // Initialize the radial progress bar
+        setRadialProgress(radialProgress, strain.avgRating * 20); // Multiply by 20 to convert to percentage (since ratings are out of 5)
     });
 
     strainList.appendChild(fragment);
+}
+
+// Function to initialize the radial progress bar
+function setRadialProgress(element, percentage) {
+    const fill = element.querySelector('.fill');
+    const fillFix = element.querySelector('.fill.fix');
+    const maskFull = element.querySelector('.mask.full');
+    const maskHalf = element.querySelector('.mask.half');
+
+    if (percentage > 50) {
+        fill.style.transform = 'rotate(180deg)';
+        fillFix.style.transform = `rotate(${(percentage - 50) * 3.6}deg)`;
+        maskFull.style.display = 'block';
+        maskHalf.style.display = 'none';
+    } else {
+        fill.style.transform = `rotate(${percentage * 3.6}deg)`;
+        fillFix.style.transform = 'rotate(0deg)';
+        maskFull.style.display = 'none';
+        maskHalf.style.display = 'block';
+    }
+
+    // Prozentsatz anzeigen
+    const percentageElement = element.querySelector('.percentage');
+    percentageElement.textContent = `${percentage}%`;
 }
 
 // Share a strain
@@ -118,33 +174,3 @@ function deleteStrain(index) {
         displayStrains(); // Refresh the displayed list
     }
 }
-
-// Add radial progress function
-document.addEventListener("DOMContentLoaded", function () {
-function updateProgress(rating) {
-    const circle = document.querySelector('circle');
-    const number = document.getElementById('number');
-    const percentage = (rating / 5) * 100;
-    const offset = 440 - (440 * percentage) / 100;
-
-    // Setze den Text in der Mitte mit zwei Dezimalstellen
-    number.textContent = rating.toFixed(2);
-
-    // Update den Kreis und die Farbe entsprechend der Bewertung
-    circle.style.strokeDashoffset = offset;
-
-    if (rating <= 1.0) {
-        circle.style.stroke = 'darkred'; // Tiefrot
-    } else if (rating <= 2.5) {
-        circle.style.stroke = 'red'; // Rötlich
-    } else if (rating <= 3.5) {
-        circle.style.stroke = 'orange'; // Orangeton
-    } else if (rating <= 4.5) {
-        circle.style.stroke = 'limegreen'; // Limegrün
-    } else {
-        circle.style.stroke = 'green'; // Grün
-    }
-}
-
-// Beispiel: Setze die Bewertung auf 3.75
-updateProgress(3.75);
