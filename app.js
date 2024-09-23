@@ -54,9 +54,7 @@ function displayStrains() {
         strainItem.className = 'strain-item';
         strainItem.id = `strain-${index}`;
 
-new-column-strain-type
         // Erstellen der Radial Progress Bar
-
         const radialProgress = document.createElement('div');
         radialProgress.className = 'radial-progress';
 
