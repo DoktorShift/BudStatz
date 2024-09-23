@@ -1,17 +1,18 @@
 const form = document.getElementById('ratingForm');
 const strainList = document.getElementById('strainList');
-let strains = JSON.parse(localStorage.getItem('strains')) || []; // Retrieve strains from localStorage or initialize as an empty array
-let editingIndex = null; // Track the index of the strain being edited
+let strains = JSON.parse(localStorage.getItem('strains')) || []; // Daten aus localStorage abrufen oder leeres Array initialisieren
+let editingIndex = null; // Index des zu bearbeitenden Strains verfolgen
 
-// Display stored strains if they exist in localStorage
+// Anzeige der gespeicherten Strains
 displayStrains();
 
-// Form submission event
+// Formular-Submit-Event
 form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const formData = new FormData(form);
     const strain = formData.get('strain');
+    const strainType = formData.get('strainType');
     const taste = parseFloat(formData.get('taste')) || 0;
     const consistency = parseFloat(formData.get('consistency')) || 0;
     const smell = parseFloat(formData.get('smell')) || 0;
@@ -21,30 +22,31 @@ form.addEventListener('submit', (e) => {
 
     const strainData = {
         name: strain,
+        type: strainType,
         ratings: { taste, consistency, smell, effect },
         avgRating: avgRating
     };
 
     if (editingIndex !== null) {
-        // If we're editing, update the strain
+        // Aktualisieren des bestehenden Strains
         strains[editingIndex] = strainData;
-        editingIndex = null; // Reset the index after editing
+        editingIndex = null;
     } else {
-        // Otherwise, add a new strain
+        // Hinzufügen eines neuen Strains
         strains.push(strainData);
-        strains.sort((a, b) => b.avgRating - a.avgRating); // Sort strains by rating
+        strains.sort((a, b) => b.avgRating - a.avgRating); // Sortieren nach Bewertung
     }
 
-    // Save updated strains to localStorage
+    // Speichern der aktualisierten Strains in localStorage
     localStorage.setItem('strains', JSON.stringify(strains));
 
-    displayStrains(); // Refresh displayed strains
-    form.reset(); // Reset the form
+    displayStrains(); // Aktualisieren der Anzeige
+    form.reset(); // Formular zurücksetzen
 });
 
-// Display strains
+// Anzeige der Strains
 function displayStrains() {
-    strainList.innerHTML = ''; // Clear current list
+    strainList.innerHTML = ''; // Aktuelle Liste leeren
     const fragment = document.createDocumentFragment();
     
     strains.forEach((strain, index) => {
@@ -52,7 +54,9 @@ function displayStrains() {
         strainItem.className = 'strain-item';
         strainItem.id = `strain-${index}`;
 
-        // Create the radial progress bar element
+new-column-strain-type
+        // Erstellen der Radial Progress Bar
+ main
         const radialProgress = document.createElement('div');
         radialProgress.className = 'radial-progress';
 
@@ -71,7 +75,40 @@ function displayStrains() {
             </svg>
         `;
 
-        // Create the content of the strain item
+new-column-strain-type
+        // Inhalt des Strain-Items
+        const strainContent = `
+            <div class="strain-details">
+                <h3>${strain.name}</h3>
+                <p>Type: ${strain.type || 'Not specified'}</p>
+                <p>Taste: ${strain.ratings.taste}</p>
+                <p>Consistency: ${strain.ratings.consistency}</p>
+                <p>Smell: ${strain.ratings.smell}</p>
+                <p>Effect: ${strain.ratings.effect}</p>
+                <div class="strain-icons">
+                    <span class="material-symbols-outlined share-icon" onclick="shareStrain(${index})">
+                        share
+                    </span>
+                    <span class="material-symbols-outlined edit-icon" onclick="editStrain(${index})">
+                        edit
+                    </span>
+                    <span class="material-symbols-outlined delete-icon" onclick="deleteStrain(${index})">
+                        delete
+                    </span>
+                </div>
+            </div>
+        `;
+
+        strainItem.innerHTML = strainContent;
+
+        // Radial Progress Bar zum Strain-Item hinzufügen
+        strainItem.appendChild(radialProgress);
+
+        // Strain-Item zum Fragment hinzufügen
+        fragment.appendChild(strainItem);
+
+        // Radial Progress Bar initialisieren
+      
         const strainContent = `
     <div class="strain-details">
         <h3>${strain.name}</h3>
@@ -102,13 +139,16 @@ function displayStrains() {
         fragment.appendChild(strainItem);
 
         // Initialize the radial progress bar
+main
         updateProgress(radialProgress, strain.avgRating);
     });
 
     strainList.appendChild(fragment);
 }
 
-// Function to update the radial progress bar
+new-column-strain-type
+// Funktion zur Aktualisierung der Radial Progress Bar
+
 function updateProgress(element, rating) {
     const circle = element.querySelector('circle');
     const number = element.querySelector('#number');
@@ -123,7 +163,9 @@ function updateProgress(element, rating) {
     circle.style.strokeDasharray = `${circumference}`;
     circle.style.strokeDashoffset = offset;
 
-    // Update the circle's stroke color based on the rating
+new-column-strain-type
+    // Farbe der Progress Bar basierend auf der Bewertung
+main
     if (rating <= 1.0) {
         circle.style.stroke = 'darkred';
     } else if (rating <= 2.5) {
@@ -137,11 +179,23 @@ function updateProgress(element, rating) {
     }
 }
 
+new-column-strain-type
+// Strain teilen
+function shareStrain(index) {
+    const strain = strains[index];
+    if (navigator.share) {
+        const shareText = `${strain.name} (Type: ${strain.type}, Avg. Rating: ${strain.avgRating.toFixed(2)})
+Taste: ${strain.ratings.taste}
+Consistency: ${strain.ratings.consistency}
+Smell: ${strain.ratings.smell}
+Effect: ${strain.ratings.effect}`;
+
 // Share a strain
 function shareStrain(index) {
     const strain = strains[index];
     if (navigator.share) {
         const shareText = `${strain.name} (Avg. Rating: ${strain.avgRating.toFixed(2)})\nTaste: ${strain.ratings.taste}\nConsistency: ${strain.ratings.consistency}\nSmell: ${strain.ratings.smell}\nEffect: ${strain.ratings.effect}`;
+main
 
         navigator.share({
             title: `Strain Rating - ${strain.name}`,
@@ -156,29 +210,109 @@ function shareStrain(index) {
     }
 }
 
-// Edit a strain
+// Strain bearbeiten
 function editStrain(index) {
     const strain = strains[index];
 
-    // Populate the form with the strain data
+    // Formular mit Strain-Daten füllen
     document.getElementById('strain').value = strain.name;
+    document.getElementById('strainType').value = strain.type;
     document.getElementById('taste').value = strain.ratings.taste;
     document.getElementById('consistency').value = strain.ratings.consistency;
     document.getElementById('smell').value = strain.ratings.smell;
     document.getElementById('effect').value = strain.ratings.effect;
 
-    editingIndex = index; // Set the index of the strain being edited
+    editingIndex = index; // Index des zu bearbeitenden Strains setzen
 }
 
-// Delete a strain with confirmation
+// Strain löschen mit Bestätigung
 function deleteStrain(index) {
     const confirmDelete = confirm("Are you sure you want to delete this strain?");
     if (confirmDelete) {
-        strains.splice(index, 1); // Remove the strain from the array
+        strains.splice(index, 1); // Strain aus dem Array entfernen
 
-        // Update localStorage after deletion
+        // Aktualisierung von localStorage nach dem Löschen
         localStorage.setItem('strains', JSON.stringify(strains));
 
-        displayStrains(); // Refresh the displayed list
+        displayStrains(); // Aktualisieren der Anzeige
     }
 }
+
+// Menü öffnen und schließen
+const menuIcon = document.getElementById('menuIcon');
+const dropdownMenu = document.getElementById('dropdownMenu');
+
+menuIcon.addEventListener('click', () => {
+    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+});
+
+// Menü schließen, wenn außerhalb geklickt wird
+document.addEventListener('click', (event) => {
+    if (!menuIcon.contains(event.target) && !dropdownMenu.contains(event.target)) {
+        dropdownMenu.style.display = 'none';
+    }
+});
+
+// Daten exportieren
+document.getElementById('exportData').addEventListener('click', () => {
+    const dataStr = JSON.stringify(strains, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'budstats-daten.json';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    // Menü schließen
+    dropdownMenu.style.display = 'none';
+});
+
+// Daten importieren
+document.getElementById('importData').addEventListener('click', () => {
+    document.getElementById('importInput').click();
+    // Menü schließen
+    dropdownMenu.style.display = 'none';
+});
+
+document.getElementById('importInput').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+
+            if (Array.isArray(importedData)) {
+                const mergeData = confirm('Möchten Sie die importierten Daten mit Ihren vorhandenen Daten zusammenführen? Klicken Sie auf "Abbrechen", um Ihre aktuellen Daten zu überschreiben.');
+
+                if (mergeData) {
+                    // Daten zusammenführen
+                    strains = strains.concat(importedData);
+
+                    // Doppelte Einträge basierend auf dem Strain-Namen entfernen
+                    strains = strains.filter((strain, index, self) =>
+                        index === self.findIndex((s) => s.name === strain.name)
+                    );
+                } else {
+                    // Daten überschreiben
+                    strains = importedData;
+                }
+
+                // In localStorage speichern
+                localStorage.setItem('strains', JSON.stringify(strains));
+
+                // Anzeige aktualisieren
+                displayStrains();
+                alert('Daten wurden erfolgreich importiert!');
+            } else {
+                alert('Ungültiges Datenformat.');
+            }
+        } catch (error) {
+            alert('Fehler beim Einlesen der JSON-Datei.');
+        }
+    };
+    reader.readAsText(file);
+});

@@ -4,16 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BudStatz</title>
+new-column-strain-type
+    <!-- Einbindung der Material Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <!-- Einbindung der CSS-Datei -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Favicon für mobile Geräte -->
+    <link rel="apple-touch-icon" href="https://cdn.discordapp.com/attachments/740634453805891710/1285025208004247633/logo_budstats_transparent.png">
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="stylesheet" href="styles.css"> <!-- Hier wird die CSS-Datei eingebunden -->
     <!-- Favicon für mobile Geräte -->
     <link rel="apple-touch-icon" href="https://cdn.discordapp.com/attachments/740634453805891710/1285025208004247633/logo_budstats_transparent.png?ex=66f004bc&is=66eeb33c&hm=12fef40d9d94c5565d8268bc676612ac1f5aac6458a5f3f0ebbd5315b3eeb3cc&">
+ain
 </head>
 <body>
+    <!-- Hamburger-Menü -->
+    <div class="menu-container">
+        <span class="material-symbols-outlined menu-icon" id="menuIcon">menu</span>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <input type="file" id="importInput" accept=".json" style="display:none;" />
+            <div class="menu-item" id="importData">
+                <span class="material-symbols-outlined">file_upload</span>
+                <span>Importieren</span>
+            </div>
+            <div class="menu-item" id="exportData">
+                <span class="material-symbols-outlined">file_download</span>
+                <span>Exportieren</span>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <!-- Logo Section -->
         <div class="logo-container">
-            <img src="https://cdn.discordapp.com/attachments/740634453805891710/1285025208004247633/logo_budstats_transparent.png?ex=66f004bc&is=66eeb33c&hm=12fef40d9d94c5565d8268bc676612ac1f5aac6458a5f3f0ebbd5315b3eeb3cc&" alt="BudStats Logo">
+new-column-strain-type
+            <img src="https://cdn.discordapp.com/attachments/740634453805891710/1285025208004247633/logo_budstats_transparent.png" alt="BudStats Logo">
+main
         </div>
         
         <h1>BudStats</h1>
@@ -22,6 +49,17 @@
             <div>
                 <label for="strain">Strain Name:</label>
                 <input type="text" id="strain" name="strain" required>
+            </div>
+
+            <!-- Neues Feld für den Strain-Typ -->
+            <div>
+                <label for="strainType">Strain Type:</label>
+                <select id="strainType" name="strainType" required>
+                    <option value="Hybrid">Hybrid</option>
+                    <option value="Indica Dominant">Indica Dominant</option>
+                    <option value="Sativa">Sativa</option>
+                    <option value="Sativa Dominant">Sativa Dominant</option>
+                </select>
             </div>
             
             <div class="rating-group">
@@ -56,15 +94,22 @@
     <footer>
         <p>Made 🥦 by <strong>DrShift</strong></p>
         <a href="https://t.me/rotation77" target="_blank">
+new-column-strain-type
+
             <!-- Telegram-Logo (Alternative Quelle) -->
             <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" class="icon">
         </a>
         <a href="https://github.com/DoktorShift" target="_blank">
             <!-- GitHub-Logo (SVG) -->
+main
             <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub" class="icon">
         </a>
     </footer>
 
+new-column-strain-type
+    <!-- Einbindung der JavaScript-Datei -->
+
     <script src="app.js"></script> <!-- Hier wird die JavaScript-Datei eingebunden -->
+main
 </body>
 </html>
