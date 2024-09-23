@@ -103,12 +103,11 @@ label {
 }
 
 input[type="text"],
-
 input[type="number"] {
     padding: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #1e1e1e1e;
+    background-color: #1e1e1e;
     color: #fff;
     box-shadow: inset 4px 4px 6px -1px rgba(0, 0, 0, 0.5),
                 inset -4px -4px 6px -1px rgba(255, 255, 255, 0.1);
@@ -127,7 +126,6 @@ button {
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
-
 button:hover {
     transform: scale(1.05);
     box-shadow: 0 8px 15px rgba(246, 160, 49, 0.3); /* Weiches orangefarbenes Leuchten */
@@ -139,8 +137,7 @@ button:hover {
 }
 
 .strain-item {
-    
-    background-color: #1e1e1e1e;
+    background-color: #1e1e1e;
     padding: 20px;
     margin-bottom: 15px;
     border-radius: 10px;
@@ -222,8 +219,6 @@ footer .icon {
     width: 24px;
     height: 24px;
     vertical-align: middle;
-}
-
 }
 
 /* Radial Progress Bar */
