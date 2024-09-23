@@ -1,11 +1,59 @@
 /* Allgemeine Stile */
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #1a1f1a; /* Slightly warmer dark green */
+    background-color: #1a1f1a; /* Leicht wärmeres Dunkelgrün */
     color: #f0f6fc;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+}
+
+/* Menü-Container */
+.menu-container {
+    position: fixed;
+    top: 20px;
+    right: 20px; /* Für oben rechts */
+    z-index: 9999; /* Sicherstellen, dass das Menü über anderen Elementen liegt */
+}
+
+.menu-icon {
+    font-size: 36px;
+    color: #f6a031;
+    cursor: pointer;
+}
+
+.menu-icon:hover {
+    color: #f7931a;
+}
+
+/* Dropdown-Menü */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: #1a1f1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    box-shadow: 4px 4px 10px -1px rgba(0, 0, 0, 0.5),
+                -4px -4px 10px -1px rgba(255, 255, 255, 0.1);
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    color: #f0f6fc;
+    cursor: pointer;
+}
+
+.menu-item:hover {
+    background-color: #2a2f2a;
+}
+
+.menu-item span {
+    margin-right: 10px;
+    font-size: 24px;
 }
 
 /* Container und Layout */
@@ -69,7 +117,7 @@ select {
 button {
     grid-column: span 2;
     padding: 15px;
-    background: linear-gradient(145deg, #344033, #f6a031); /* Earthy green to orange gradient */
+    background: linear-gradient(145deg, #344033, #f6a031); /* Erdiges Grün zu Orange Gradient */
     color: white;
     border: none;
     border-radius: 8px;
@@ -81,7 +129,7 @@ button {
 
 button:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 15px rgba(246, 160, 49, 0.3); /* Soft orange glow */
+    box-shadow: 0 8px 15px rgba(246, 160, 49, 0.3); /* Weiches orangefarbenes Leuchten */
 }
 
 /* Strain-Liste */
