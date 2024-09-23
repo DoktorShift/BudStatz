@@ -105,36 +105,6 @@ function displayStrains() {
         fragment.appendChild(strainItem);
 
         // Radial Progress Bar initialisieren
-        const strainContent = `
-    <div class="strain-details">
-        <h3>${strain.name}</h3>
-        <p>Taste: ${strain.ratings.taste}</p>
-        <p>Consistency: ${strain.ratings.consistency}</p>
-        <p>Smell: ${strain.ratings.smell}</p>
-        <p>Effect: ${strain.ratings.effect}</p>
-        <div class="strain-icons">
-            <span class="material-symbols-outlined share-icon" onclick="shareStrain(${index})">
-                share
-            </span>
-            <span class="material-symbols-outlined edit-icon" onclick="editStrain(${index})">
-                edit
-            </span>
-            <span class="material-symbols-outlined delete-icon" onclick="deleteStrain(${index})">
-                delete
-            </span>
-        </div>
-    </div>
-`;
-
-        strainItem.innerHTML = strainContent;
-
-        // Append the radial progress bar to the strain item
-        strainItem.appendChild(radialProgress);
-
-        // Append the strain item to the fragment
-        fragment.appendChild(strainItem);
-
-        // Initialize the radial progress bar
         updateProgress(radialProgress, strain.avgRating);
     });
 
@@ -180,12 +150,6 @@ Consistency: ${strain.ratings.consistency}
 Smell: ${strain.ratings.smell}
 Effect: ${strain.ratings.effect}`;
 
-// Share a strain
-function shareStrain(index) {
-    const strain = strains[index];
-    if (navigator.share) {
-        const shareText = `${strain.name} (Avg. Rating: ${strain.avgRating.toFixed(2)})\nTaste: ${strain.ratings.taste}\nConsistency: ${strain.ratings.consistency}\nSmell: ${strain.ratings.smell}\nEffect: ${strain.ratings.effect}`;
-        
         navigator.share({
             title: `Strain Rating - ${strain.name}`,
             text: shareText,
