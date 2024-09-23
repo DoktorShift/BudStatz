@@ -95,6 +95,7 @@ form {
 form div {
     display: flex;
     flex-direction: column;
+    position: relative; /* Für das Dropdown-Menü */
 }
 
 label {
@@ -103,14 +104,40 @@ label {
 }
 
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+select {
     padding: 10px;
     border: none;
     border-radius: 5px;
     background-color: #1e1e1e;
     color: #fff;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
     box-shadow: inset 4px 4px 6px -1px rgba(0, 0, 0, 0.5),
                 inset -4px -4px 6px -1px rgba(255, 255, 255, 0.1);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="%23f7931a"><polygon points="0,0 12,0 6,6"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px 12px;
+}
+
+select:focus {
+    outline: none;
+}
+
+/* Optional: Platzhalterfarbe für das Dropdown-Menü */
+select option[disabled][hidden] {
+    color: #878484;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 600px) {
+    select {
+        font-size: 14px;
+    }
 }
 
 button {
