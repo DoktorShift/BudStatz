@@ -54,7 +54,9 @@ function displayStrains() {
         strainItem.className = 'strain-item';
         strainItem.id = `strain-${index}`;
 
+new-column-strain-type
         // Erstellen der Radial Progress Bar
+ main
         const radialProgress = document.createElement('div');
         radialProgress.className = 'radial-progress';
 
@@ -73,6 +75,7 @@ function displayStrains() {
             </svg>
         `;
 
+new-column-strain-type
         // Inhalt des Strain-Items
         const strainContent = `
             <div class="strain-details">
@@ -105,13 +108,47 @@ function displayStrains() {
         fragment.appendChild(strainItem);
 
         // Radial Progress Bar initialisieren
+      
+        const strainContent = `
+    <div class="strain-details">
+        <h3>${strain.name}</h3>
+        <p>Taste: ${strain.ratings.taste}</p>
+        <p>Consistency: ${strain.ratings.consistency}</p>
+        <p>Smell: ${strain.ratings.smell}</p>
+        <p>Effect: ${strain.ratings.effect}</p>
+        <div class="strain-icons">
+            <span class="material-symbols-outlined share-icon" onclick="shareStrain(${index})">
+                share
+            </span>
+            <span class="material-symbols-outlined edit-icon" onclick="editStrain(${index})">
+                edit
+            </span>
+            <span class="material-symbols-outlined delete-icon" onclick="deleteStrain(${index})">
+                delete
+            </span>
+        </div>
+    </div>
+`;
+
+        strainItem.innerHTML = strainContent;
+
+        // Append the radial progress bar to the strain item
+        strainItem.appendChild(radialProgress);
+
+        // Append the strain item to the fragment
+        fragment.appendChild(strainItem);
+
+        // Initialize the radial progress bar
+main
         updateProgress(radialProgress, strain.avgRating);
     });
 
     strainList.appendChild(fragment);
 }
 
+new-column-strain-type
 // Funktion zur Aktualisierung der Radial Progress Bar
+
 function updateProgress(element, rating) {
     const circle = element.querySelector('circle');
     const number = element.querySelector('#number');
@@ -126,7 +163,9 @@ function updateProgress(element, rating) {
     circle.style.strokeDasharray = `${circumference}`;
     circle.style.strokeDashoffset = offset;
 
+new-column-strain-type
     // Farbe der Progress Bar basierend auf der Bewertung
+main
     if (rating <= 1.0) {
         circle.style.stroke = 'darkred';
     } else if (rating <= 2.5) {
@@ -140,6 +179,7 @@ function updateProgress(element, rating) {
     }
 }
 
+new-column-strain-type
 // Strain teilen
 function shareStrain(index) {
     const strain = strains[index];
@@ -149,6 +189,13 @@ Taste: ${strain.ratings.taste}
 Consistency: ${strain.ratings.consistency}
 Smell: ${strain.ratings.smell}
 Effect: ${strain.ratings.effect}`;
+
+// Share a strain
+function shareStrain(index) {
+    const strain = strains[index];
+    if (navigator.share) {
+        const shareText = `${strain.name} (Avg. Rating: ${strain.avgRating.toFixed(2)})\nTaste: ${strain.ratings.taste}\nConsistency: ${strain.ratings.consistency}\nSmell: ${strain.ratings.smell}\nEffect: ${strain.ratings.effect}`;
+main
 
         navigator.share({
             title: `Strain Rating - ${strain.name}`,
