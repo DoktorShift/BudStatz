@@ -56,7 +56,7 @@ function displayStrains() {
 
 new-column-strain-type
         // Erstellen der Radial Progress Bar
- main
+
         const radialProgress = document.createElement('div');
         radialProgress.className = 'radial-progress';
 
@@ -75,7 +75,6 @@ new-column-strain-type
             </svg>
         `;
 
-new-column-strain-type
         // Inhalt des Strain-Items
         const strainContent = `
             <div class="strain-details">
@@ -108,7 +107,6 @@ new-column-strain-type
         fragment.appendChild(strainItem);
 
         // Radial Progress Bar initialisieren
-      
         const strainContent = `
     <div class="strain-details">
         <h3>${strain.name}</h3>
@@ -139,16 +137,13 @@ new-column-strain-type
         fragment.appendChild(strainItem);
 
         // Initialize the radial progress bar
-main
         updateProgress(radialProgress, strain.avgRating);
     });
 
     strainList.appendChild(fragment);
 }
 
-new-column-strain-type
 // Funktion zur Aktualisierung der Radial Progress Bar
-
 function updateProgress(element, rating) {
     const circle = element.querySelector('circle');
     const number = element.querySelector('#number');
@@ -162,10 +157,8 @@ function updateProgress(element, rating) {
 
     circle.style.strokeDasharray = `${circumference}`;
     circle.style.strokeDashoffset = offset;
-
-new-column-strain-type
+    
     // Farbe der Progress Bar basierend auf der Bewertung
-main
     if (rating <= 1.0) {
         circle.style.stroke = 'darkred';
     } else if (rating <= 2.5) {
@@ -179,7 +172,6 @@ main
     }
 }
 
-new-column-strain-type
 // Strain teilen
 function shareStrain(index) {
     const strain = strains[index];
@@ -195,8 +187,7 @@ function shareStrain(index) {
     const strain = strains[index];
     if (navigator.share) {
         const shareText = `${strain.name} (Avg. Rating: ${strain.avgRating.toFixed(2)})\nTaste: ${strain.ratings.taste}\nConsistency: ${strain.ratings.consistency}\nSmell: ${strain.ratings.smell}\nEffect: ${strain.ratings.effect}`;
-main
-
+        
         navigator.share({
             title: `Strain Rating - ${strain.name}`,
             text: shareText,
