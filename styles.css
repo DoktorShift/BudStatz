@@ -8,7 +8,6 @@ body {
     overflow-x: hidden;
 }
 
-new-column-strain-type
 /* Menü-Container */
 .menu-container {
     position: fixed;
@@ -75,7 +74,6 @@ h1 {
     font-size: 2em;
 }
 
-main
 /* Logo Section */
 .logo-container {
     text-align: center;
@@ -105,14 +103,12 @@ label {
 }
 
 input[type="text"],
-new-column-strain-type
 
 input[type="number"] {
     padding: 10px;
     border: none;
     border-radius: 5px;
     background-color: #1e1e1e1e;
-main
     color: #fff;
     box-shadow: inset 4px 4px 6px -1px rgba(0, 0, 0, 0.5),
                 inset -4px -4px 6px -1px rgba(255, 255, 255, 0.1);
@@ -143,10 +139,8 @@ button:hover {
 }
 
 .strain-item {
-new-column-strain-type
     
     background-color: #1e1e1e1e;
-main
     padding: 20px;
     margin-bottom: 15px;
     border-radius: 10px;
@@ -158,11 +152,8 @@ main
 .strain-item h3 {
     margin-top: 0;
     color: #f6a031;
-    word-wrap: break-word; /* Lässt den Text umbrechen */
-new-column-strain-type
-    
+    word-wrap: break-word; /* Lässt den Text umbrechen */    
     max-width: 80%; /* Passt die Breite des Strain-Namens an */
-main
 }
 
 .strain-item p {
@@ -231,7 +222,6 @@ footer .icon {
     width: 24px;
     height: 24px;
     vertical-align: middle;
-new-column-strain-type
 }
 
 }
