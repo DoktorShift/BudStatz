@@ -1,16 +1,13 @@
 /******************************************/
-/**       GLOBAL DEMO DATA + STATE       **/
+/** BudStats - script.js (0.1 increments + extended image share) */
 /******************************************/
 
-// Attempt to load from localStorage, else use defaults
+// Attempt to load from localStorage, else fall back to default
 let savedStores = localStorage.getItem("budstats_stores");
 let savedStrains = localStorage.getItem("budstats_strains");
 
-// Use capitalized type values to match <select> ("Sativa", "Indica", "Hybrid")
-let stores = savedStores
-  ? JSON.parse(savedStores)
-  : ["Green Store", "Homegrow"];
-
+// We'll use capitalized strain types matching our <select> ("Sativa", "Indica", "Hybrid").
+let stores = savedStores ? JSON.parse(savedStores) : ["Green Store", "Herbal Haven"];
 let allStrains = savedStrains
   ? JSON.parse(savedStrains)
   : [
@@ -33,22 +30,22 @@ let allStrains = savedStrains
         consistency: 8.5,
         smell: 8.0,
         effect: 9.5,
-        store: "Homegrow",
+        store: "Herbal Haven",
         photo: "/placeholder.svg?height=400&width=600",
       },
     ];
 
 let viewMode = "by-store"; // "all" or "by-store"
-let editingStrainId = null; // track if we are editing a strain
+let editingStrainId = null; // track which strain is being edited
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 1) Show loading screen for ~2 seconds
+  // 2-second loading screen
   setTimeout(() => {
-    document.getElementById("loadingScreen").style.display = "none"; // hide loading
-    document.getElementById("appContainer").classList.remove("hidden"); // show app
+    document.getElementById("loadingScreen").style.display = "none";
+    document.getElementById("appContainer").classList.remove("hidden");
   }, 2000);
 
-  // 2) Initialize everything
+  // Initialize everything
   initSideSheet();
   renderStoreButtons();
   renderAddStrainForm();
@@ -58,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /******************************************/
-/**           SIDE SHEET LOGIC           **/
+/** Side Sheet (Menu) Logic              **/
 /******************************************/
 function initSideSheet() {
   const sheetTrigger = document.getElementById("sheetTrigger");
@@ -72,7 +69,7 @@ function initSideSheet() {
     sideSheet.classList.remove("show");
   });
 
-  // close if clicking outside
+  // Close if clicking outside the sheet
   document.addEventListener("click", (e) => {
     if (!sideSheet.contains(e.target) && !sheetTrigger.contains(e.target)) {
       sideSheet.classList.remove("show");
@@ -81,15 +78,15 @@ function initSideSheet() {
 }
 
 /******************************************/
-/**        STORE SELECTOR (SHEET)        **/
+/** Store Management (Add/Delete)        **/
 /******************************************/
 function renderStoreButtons() {
   const container = document.getElementById("storeButtons");
   container.innerHTML = "";
 
   stores.forEach((store) => {
-    const storeItem = document.createElement("div");
-    storeItem.className = "store-item";
+    const item = document.createElement("div");
+    item.className = "store-item";
 
     const nameSpan = document.createElement("span");
     nameSpan.className = "store-name";
@@ -98,9 +95,9 @@ function renderStoreButtons() {
     const delBtn = document.createElement("button");
     delBtn.className = "delete-store-btn";
     delBtn.innerHTML = "&times;";
-    delBtn.title = "Delete this store";
+    delBtn.title = `Delete store "${store}"`;
     delBtn.onclick = () => {
-      if (confirm(`Remove store "${store}" from the list?`)) {
+      if (confirm(`Remove store "${store}" from your list?`)) {
         stores = stores.filter((s) => s !== store);
         localStorage.setItem("budstats_stores", JSON.stringify(stores));
         renderStoreButtons();
@@ -108,9 +105,9 @@ function renderStoreButtons() {
       }
     };
 
-    storeItem.appendChild(nameSpan);
-    storeItem.appendChild(delBtn);
-    container.appendChild(storeItem);
+    item.appendChild(nameSpan);
+    item.appendChild(delBtn);
+    container.appendChild(item);
   });
 
   const addStoreBtn = document.getElementById("addStoreButton");
@@ -127,19 +124,20 @@ function renderStoreButtons() {
 }
 
 /******************************************/
-/**         ADD/EDIT STRAIN FORM         **/
+/** Add/Edit Strain Form                 **/
 /******************************************/
 function renderAddStrainForm() {
   const container = document.getElementById("addStrainFormContainer");
   container.innerHTML = "";
 
-  const formDiv = document.createElement("div");
-  formDiv.className = "form-card";
+  const formCard = document.createElement("div");
+  formCard.className = "form-card";
 
-  const headingText = editingStrainId ? "Edit Strain" : "Add New Strain";
+  const heading = editingStrainId ? "Edit Strain" : "Add New Strain";
 
-  formDiv.innerHTML = `
-    <h2>${headingText}</h2>
+  // 0.1 increments for rating steps
+  formCard.innerHTML = `
+    <h2>${heading}</h2>
     <form id="strainForm">
       <!-- Strain Name -->
       <div class="add-form-group">
@@ -153,9 +151,7 @@ function renderAddStrainForm() {
         <select id="strainType" required>
           <option value="" disabled selected hidden>Select type</option>
           <option value="Indica">Indica</option>
-          <option value="Indica">Indica dominant</option>
           <option value="Sativa">Sativa</option>
-          <option value="Sativa">Sativa dominant</option>
           <option value="Hybrid">Hybrid</option>
         </select>
       </div>
@@ -169,8 +165,8 @@ function renderAddStrainForm() {
         </select>
       </div>
 
-      <!-- taste, consistency, smell, effect -->
-      ${["taste","consistency","smell","effect"].map(attr => `
+      <!-- Taste, consistency, smell, effect -->
+      ${["taste","consistency","smell","effect"].map((attr) => `
       <div class="add-form-group">
         <label>${attr.charAt(0).toUpperCase() + attr.slice(1)} (0-10)</label>
         <input type="range" min="0" max="10" step="0.1" id="${attr}" value="5" />
@@ -183,28 +179,29 @@ function renderAddStrainForm() {
         <input type="file" id="strainPhoto" accept="image/*" />
       </div>
 
-      <!-- Submit -->
+      <!-- Submit Button -->
       <button type="submit" class="add-form-submit" id="submitBtn">
         ${editingStrainId ? "Save Changes" : "Add Strain"}
       </button>
     </form>
   `;
 
-  container.appendChild(formDiv);
+  container.appendChild(formCard);
 
+  // Keep track of range input changes
   ["taste","consistency","smell","effect"].forEach((attr) => {
-    const range = formDiv.querySelector(`#${attr}`);
-    const valSpan = formDiv.querySelector(`#${attr}Value`);
+    const range = formCard.querySelector(`#${attr}`);
+    const valSpan = formCard.querySelector(`#${attr}Value`);
     range.addEventListener("input", () => {
       valSpan.textContent = range.value;
     });
   });
 
-  const strainForm = formDiv.querySelector("#strainForm");
-  const photoInput = formDiv.querySelector("#strainPhoto");
-  const submitBtn = formDiv.querySelector("#submitBtn");
+  // If editing, populate existing data
+  const strainForm = formCard.querySelector("#strainForm");
+  const photoInput = formCard.querySelector("#strainPhoto");
+  const submitBtn = formCard.querySelector("#submitBtn");
 
-  // If editing, populate fields
   if (editingStrainId) {
     const existing = allStrains.find((s) => s.id === editingStrainId);
     if (existing) {
@@ -213,16 +210,17 @@ function renderAddStrainForm() {
       strainForm.querySelector("#strainStore").value = existing.store;
       ["taste","consistency","smell","effect"].forEach((attr) => {
         strainForm.querySelector(`#${attr}`).value = existing[attr];
-        formDiv.querySelector(`#${attr}Value`).textContent = existing[attr];
+        formCard.querySelector(`#${attr}Value`).textContent = existing[attr];
       });
     }
   }
 
+  // Submit event
   strainForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    // create or replace strain
-    const newOrEditedStrain = {
+    // Gather data
+    const newStrain = {
       id: editingStrainId ? editingStrainId : Date.now().toString(),
       name: strainForm.querySelector("#strainName").value.trim(),
       type: strainForm.querySelector("#strainType").value,
@@ -234,63 +232,60 @@ function renderAddStrainForm() {
       photo: null,
     };
 
-    // If there's a photo
+    // If user selected a new photo
     const file = photoInput.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = function(ev) {
-        newOrEditedStrain.photo = ev.target?.result; // base64
-        finalize(newOrEditedStrain);
+        newStrain.photo = ev.target?.result;
+        finalize(newStrain);
       };
       reader.readAsDataURL(file);
     } else {
-      // If editing and no new photo was chosen, keep old photo
+      // Keep old photo if editing
       if (editingStrainId) {
         const old = allStrains.find((s) => s.id === editingStrainId);
         if (old?.photo) {
-          newOrEditedStrain.photo = old.photo;
+          newStrain.photo = old.photo;
         }
       }
-      finalize(newOrEditedStrain);
+      finalize(newStrain);
     }
 
     function finalize(strObj) {
       if (editingStrainId) {
-        // find & update
         const idx = allStrains.findIndex((s) => s.id === editingStrainId);
         if (idx >= 0) {
           allStrains[idx] = strObj;
         }
         editingStrainId = null;
       } else {
-        // new
         allStrains.push(strObj);
       }
 
-      // save to localStorage
       localStorage.setItem("budstats_strains", JSON.stringify(allStrains));
 
-      // reset
+      // Reset
       strainForm.reset();
       ["taste","consistency","smell","effect"].forEach((attr) => {
-        formDiv.querySelector(`#${attr}Value`).textContent = "5";
+        formCard.querySelector(`#${attr}Value`).textContent = "5";
       });
       submitBtn.textContent = "Add Strain";
 
+      // Re-render
       renderStoreView();
-      renderAddStrainForm(); // go back to add mode
+      renderAddStrainForm();
     }
   });
 }
 
 /******************************************/
-/**            STORE VIEW LOGIC          **/
+/** StoreView: "all" or "by-store"       **/
 /******************************************/
 function renderStoreView() {
   const container = document.getElementById("storeViewContainer");
   container.innerHTML = "";
 
-  // Buttons row for "all" or "by-store"
   const btnRow = document.createElement("div");
   btnRow.className = "view-mode-btns";
   btnRow.innerHTML = `
@@ -301,6 +296,7 @@ function renderStoreView() {
 
   const allBtn = btnRow.querySelector("#allViewBtn");
   const byStoreBtn = btnRow.querySelector("#byStoreBtn");
+
   allBtn.onclick = () => {
     viewMode = "all";
     renderStoreView();
@@ -318,8 +314,8 @@ function renderStoreView() {
     });
     container.appendChild(grid);
   } else {
-    const groups = groupStrainsByStore();
-    Object.keys(groups).forEach((store) => {
+    const grouped = groupStrainsByStore();
+    Object.keys(grouped).forEach((store) => {
       const cardDiv = document.createElement("div");
       cardDiv.className = "store-group-card";
 
@@ -334,7 +330,7 @@ function renderStoreView() {
           </svg>
           <span>${store}</span>
           <span style="font-size:0.8rem; color:#666; margin-left:4px;">
-            (${groups[store].length})
+            (${grouped[store].length})
           </span>
         </div>
         <div class="chevron-icon">
@@ -351,7 +347,8 @@ function renderStoreView() {
       content.className = "store-group-content";
       const cGrid = document.createElement("div");
       cGrid.className = "strains-grid";
-      groups[store].forEach((strain) => {
+
+      grouped[store].forEach((strain) => {
         cGrid.appendChild(createStrainCard(strain));
       });
       content.appendChild(cGrid);
@@ -384,10 +381,11 @@ function groupStrainsByStore() {
 }
 
 /******************************************/
-/**          CREATE STRAIN CARD          **/
+/** Strain Card + DataURL -> File        **/
 /******************************************/
 
-// Convert a base64 DataURL to a File (for advanced web share with images)
+// If you want to share images with the Web Share API Level 2, 
+// you can convert the base64 to a File:
 function dataURLtoFile(dataURL, filename) {
   if (!dataURL.startsWith("data:")) return null;
   const arr = dataURL.split(",");
@@ -402,8 +400,8 @@ function dataURLtoFile(dataURL, filename) {
 }
 
 function createStrainCard(strain) {
-  const values = [strain.taste, strain.consistency, strain.smell, strain.effect];
-  const avg = parseFloat((values.reduce((a,b)=>a+b, 0) / values.length).toFixed(1));
+  const ratings = [strain.taste, strain.consistency, strain.smell, strain.effect];
+  const avg = parseFloat((ratings.reduce((a,b) => a+b, 0) / ratings.length).toFixed(1));
 
   function getRatingClass(r) {
     if (r >= 8.5) return "bg-gradient-high";
@@ -412,18 +410,18 @@ function createStrainCard(strain) {
     if (r >= 3)   return "bg-gradient-low";
     return         "bg-gradient-bad";
   }
-  const ratingClass = getRatingClass(avg);
+  const badgeClass = getRatingClass(avg);
 
   const card = document.createElement("div");
   card.className = "strain-card";
 
-  // rating badge
+  // Rating badge (top-right circle)
   const badge = document.createElement("div");
-  badge.className = `strain-badge ${ratingClass}`;
+  badge.className = `strain-badge ${badgeClass}`;
   badge.textContent = avg;
   card.appendChild(badge);
 
-  // photo or placeholder
+  // Photo or placeholder
   if (strain.photo) {
     const img = document.createElement("img");
     img.src = strain.photo;
@@ -432,36 +430,37 @@ function createStrainCard(strain) {
     img.addEventListener("click", () => openImageModal(strain.photo));
     card.appendChild(img);
   } else {
-    const placeholder = document.createElement("div");
-    placeholder.className = "strain-placeholder";
-    placeholder.textContent = "No image available";
-    card.appendChild(placeholder);
+    const ph = document.createElement("div");
+    ph.className = "strain-placeholder";
+    ph.textContent = "No image available";
+    card.appendChild(ph);
   }
 
-  // content
+  // Content container
   const contentDiv = document.createElement("div");
   contentDiv.className = "strain-card-content";
 
-  // header
-  const headerDiv = document.createElement("div");
-  headerDiv.className = "strain-card-header";
-  const nameSpan = document.createElement("span");
-  nameSpan.className = "strain-name";
-  nameSpan.textContent = strain.name;
+  // Header row (strain name + type)
+  const headerRow = document.createElement("div");
+  headerRow.className = "strain-card-header";
 
-  const typeSpan = document.createElement("span");
-  typeSpan.className = "strain-type";
-  typeSpan.textContent = strain.type;
+  const nameEl = document.createElement("span");
+  nameEl.className = "strain-name";
+  nameEl.textContent = strain.name;
 
-  headerDiv.appendChild(nameSpan);
-  headerDiv.appendChild(typeSpan);
-  contentDiv.appendChild(headerDiv);
+  const typeEl = document.createElement("span");
+  typeEl.className = "strain-type";
+  typeEl.textContent = strain.type;
 
-  // store
+  headerRow.appendChild(nameEl);
+  headerRow.appendChild(typeEl);
+  contentDiv.appendChild(headerRow);
+
+  // Store line
   if (strain.store) {
-    const storeDiv = document.createElement("div");
-    storeDiv.className = "strain-store";
-    storeDiv.innerHTML = `
+    const storeLine = document.createElement("div");
+    storeLine.className = "strain-store";
+    storeLine.innerHTML = `
       <svg width="14" height="14" fill="none" stroke="currentColor"
            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
            viewBox="0 0 24 24">
@@ -469,18 +468,18 @@ function createStrainCard(strain) {
       </svg>
       <span>${strain.store}</span>
     `;
-    contentDiv.appendChild(storeDiv);
+    contentDiv.appendChild(storeLine);
   }
 
-  // rating lines
-  const ratingLinesDiv = document.createElement("div");
-  const categories = [
+  // Rating lines
+  const ratingBlock = document.createElement("div");
+  const cats = [
     { label: "Taste", value: strain.taste },
     { label: "Consistency", value: strain.consistency },
     { label: "Smell", value: strain.smell },
     { label: "Effect", value: strain.effect },
   ];
-  categories.forEach((r) => {
+  cats.forEach((r) => {
     const line = document.createElement("div");
     line.className = "rating-line";
     line.innerHTML = `
@@ -489,17 +488,19 @@ function createStrainCard(strain) {
         <div class="rating-bar-track">
           <div
             class="rating-bar-fill ${getRatingClass(r.value)}"
-            style="width:${(r.value/10)*100}%"
+            style="width:${(r.value / 10) * 100}%"
           ></div>
         </div>
-        <span style="font-size:0.8rem; color:#444; width:20px; text-align:right;">${r.value}</span>
+        <span style="font-size:0.8rem; color:#444; width:20px; text-align:right;">
+          ${r.value}
+        </span>
       </div>
     `;
-    ratingLinesDiv.appendChild(line);
+    ratingBlock.appendChild(line);
   });
-  contentDiv.appendChild(ratingLinesDiv);
+  contentDiv.appendChild(ratingBlock);
 
-  // actions row
+  // Action buttons row (Share, Edit, Delete)
   const actionsDiv = document.createElement("div");
   actionsDiv.className = "strain-actions";
 
@@ -517,56 +518,62 @@ function createStrainCard(strain) {
     </svg>
   `;
   shareBtn.onclick = async () => {
-    // Build a text with full details
-    const details = `
-Strain: ${strain.name}
-Store: ${strain.store}
-Taste: ${strain.taste}
-Consistency: ${strain.consistency}
-Smell: ${strain.smell}
-Effect: ${strain.effect}
----
-Average Rating: ${avg}
-    `.trim();
-
+    // If no navigator.share, show fallback
     if (!navigator.share) {
-      alert("Your browser does not support Web Share. \nTry copying the info or using a mobile device.");
+      alert("Sharing not supported by your browser.");
       return;
     }
 
-    // If the strain has a photo, try to share the file
+    // Build a more professional share text
+    const shareText = `
+*** BudStats - ${strain.name} ***
+Store: ${strain.store}
+----------------------------
+Taste:       ${strain.taste}/10
+Consistency: ${strain.consistency}/10
+Smell:       ${strain.smell}/10
+Effect:      ${strain.effect}/10
+----------------------------
+Final Rating: ${avg}/10
+
+Check out more on BudStats!
+`.trim();
+
+    // If there's a photo, attempt to share it
     if (strain.photo) {
       try {
         const file = dataURLtoFile(strain.photo, `${strain.name.replace(/\s+/g, "_")}.jpg`);
         if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
-          // Browser supports file sharing
           await navigator.share({
             title: `BudStats - ${strain.name}`,
-            text: details,
+            text: shareText,
             files: [file],
           });
-          console.log("Shared successfully (with image).");
+          console.log("Shared with image successfully.");
         } else {
-          // Fallback to text-only share
+          // If can't share the file, fallback to text-only
           await navigator.share({
             title: `BudStats - ${strain.name}`,
-            text: details,
+            text: shareText,
           });
-          console.log("Shared successfully (text-only).");
+          console.log("Shared text-only, image not supported.");
         }
       } catch (err) {
-        console.error("Error in share with image:", err);
+        console.error("Error while sharing with image:", err);
         // fallback to text
-        await navigator.share({ title: `BudStats - ${strain.name}`, text: details });
+        await navigator.share({
+          title: `BudStats - ${strain.name}`,
+          text: shareText,
+        });
       }
     } else {
-      // no photo, just do text share
+      // No photo, share text only
       try {
         await navigator.share({
           title: `BudStats - ${strain.name}`,
-          text: details,
+          text: shareText,
         });
-        console.log("Shared successfully (no image).");
+        console.log("Shared text-only (no image).");
       } catch (err) {
         console.error("Share failed:", err);
       }
@@ -618,7 +625,7 @@ Average Rating: ${avg}
 }
 
 /******************************************/
-/**          DATA ACTIONS (I/E)          **/
+/** Data Actions (Export/Import)         **/
 /******************************************/
 function initDataActions() {
   const exportBtn = document.getElementById("exportButton");
@@ -652,12 +659,11 @@ function initDataActions() {
           alert("Invalid JSON. Must be {stores:[], strains:[]}");
           return;
         }
-        // Merge or Overwrite?
+        // Merge or overwrite?
         if (confirm("Merge data? (Cancel to overwrite)")) {
-          // Merge
           stores = Array.from(new Set([...stores, ...parsed.stores]));
           allStrains = [...allStrains, ...parsed.strains];
-          // remove duplicates by ID
+          // Deduplicate by strain.id
           const seen = new Set();
           allStrains = allStrains.filter((st) => {
             if (seen.has(st.id)) return false;
@@ -665,7 +671,6 @@ function initDataActions() {
             return true;
           });
         } else {
-          // Overwrite
           stores = parsed.stores;
           allStrains = parsed.strains;
         }
@@ -687,7 +692,7 @@ function initDataActions() {
 }
 
 /******************************************/
-/**           IMAGE MODAL LOGIC          **/
+/** Image Modal for Full Preview         **/
 /******************************************/
 let modal, modalImg, modalClose;
 function initImageModal() {
