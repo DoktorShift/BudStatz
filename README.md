@@ -12,19 +12,9 @@
 
 <p align="center">
   <img 
-    src="https://github.com/user-attachments/assets/f4240124-7974-4c26-b89a-34ae0143a308"
-    width="450" 
-    alt="grafik" 
-    style="border: 2px solid #ccc; border-radius: 8px; margin: 10px;"
-  />
-  <img 
-    src="https://github.com/user-attachments/assets/c5f75162-7a00-4b79-adf5-3322c080c167" 
+    src="https://github.com/user-attachments/assets/eb17fb99-dc5b-45d1-869e-d2913b1cafb6" 
     width="450"
     alt="grafik" 
     style="border: 2px solid #ccc; border-radius: 8px; margin: 10px;"
   />
 </p>
-
-
-
-
