@@ -9,7 +9,7 @@ let savedStrains = localStorage.getItem("budstats_strains");
 // Use capitalized type values to match <select> ("Sativa", "Indica", "Hybrid")
 let stores = savedStores
   ? JSON.parse(savedStores)
-  : ["Green Store", "Herbal Haven"];
+  : ["Green Store", "Homegrow"];
 
 let allStrains = savedStrains
   ? JSON.parse(savedStrains)
