@@ -23,28 +23,38 @@ body {
   padding: 1rem;
 }
 
+/* Hide with .hidden class */
+.hidden {
+  display: none;
+}
+
 /* ============================= */
-/* ======== SPLASH SCREEN ====== */
+/* ========== LOADING ========== */
 /* ============================= */
-.splash-screen {
+#loadingScreen {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: #ffffff; /* or a matching gradient if you prefer */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #f5fff4; /* light background or white */
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 99999; /* on top of everything else */
-}
-.splash-logo {
-  width: 120px;
-  height: auto;
-  animation: splashFade 2s ease-out;
+  z-index: 9999; /* on top of everything */
 }
 
-@keyframes splashFade {
-  from { opacity: 1; }
-  to { opacity: 1; } /* remain visible until we remove it in JS */
+#loadingScreen img {
+  width: 120px;
+  height: auto;
+  animation: pulse 1.5s infinite;
+}
+
+/* simple "pulse" animation to make the logo grow/shrink */
+@keyframes pulse {
+  0% { transform: scale(1.0); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1.0); }
 }
 
 /* ============================= */
