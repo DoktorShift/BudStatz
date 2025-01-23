@@ -24,6 +24,30 @@ body {
 }
 
 /* ============================= */
+/* ======== SPLASH SCREEN ====== */
+/* ============================= */
+.splash-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #ffffff; /* or a matching gradient if you prefer */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999; /* on top of everything else */
+}
+.splash-logo {
+  width: 120px;
+  height: auto;
+  animation: splashFade 2s ease-out;
+}
+
+@keyframes splashFade {
+  from { opacity: 1; }
+  to { opacity: 1; } /* remain visible until we remove it in JS */
+}
+
+/* ============================= */
 /* ========== NAV BAR ========== */
 /* ============================= */
 .nav-bar {
