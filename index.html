@@ -1,101 +1,79 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BudStats</title>
-    <!-- Einbindung der Material Icons -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-    <!-- Einbindung der CSS-Datei -->
-    <link rel="stylesheet" href="styles.css">
-    <!-- Favicon für mobile Geräte -->
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/DoktorShift/images/main/budstaz/logo_budstats_transparent.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>BudStats</title>
+
+  <!-- Our custom CSS -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <!-- Hamburger-Menü -->
-    <div class="menu-container">
-        <span class="material-symbols-outlined menu-icon" id="menuIcon">menu</span>
-        <div class="dropdown-menu" id="dropdownMenu">
-            <input type="file" id="importInput" accept=".json" style="display:none;" />
-            <div class="menu-item" id="importData">
-                <span class="material-symbols-outlined">file_upload</span>
-                <span>Importieren</span>
-            </div>
-            <div class="menu-item" id="exportData">
-                <span class="material-symbols-outlined">file_download</span>
-                <span>Exportieren</span>
-            </div>
-        </div>
+  <div class="container" id="appContainer">
+
+    <!-- ===== NAV BAR ===== -->
+    <div class="nav-bar">
+      <h1 class="app-title">BudStats</h1>
+      <button class="burger-btn" id="sheetTrigger" title="Open Settings">
+        <!-- "burger" icon inline SVG -->
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+             xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
 
-    <div class="container">
-        <!-- Logo Section -->
-        <div class="logo-container">
-            <img src="https://raw.githubusercontent.com/DoktorShift/images/main/budstaz/logo_budstats_transparent.png" alt="BudStats Logo">
+    <!-- ===== SIDE SHEET ===== -->
+    <div class="side-sheet" id="sideSheet">
+      <div class="sheet-header">
+        <h2>Settings</h2>
+        <button class="close-btn" id="closeSheetBtn" title="Close">&times;</button>
+      </div>
+
+      <!-- Store Selector -->
+      <div class="sheet-section">
+        <h3>Stores</h3>
+        <div class="add-store">
+          <input type="text" id="newStoreInput" placeholder="Add new store..." />
+          <button id="addStoreButton" class="store-add-btn">
+            <!-- plus icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14M5 12h14"></path>
+            </svg>
+          </button>
         </div>
-        
-        <h1>BudStats</h1>
-        
-        <form id="ratingForm">
-            <div>
-                <label for="strain">Strain Name:</label>
-                <input type="text" id="strain" name="strain" required>
-            </div>
+        <div id="storeButtons" class="store-buttons"></div>
+      </div>
 
-            <!-- Neues Feld für den Strain-Typ -->
-            <div>
-                <label for="strainType">Strain Type:</label>
-                <select id="strainType" name="strainType" required>
-                    <option value="" disabled selected hidden>Select Type</option>
-                    <option value="Hybrid">Hybrid</option>
-                    <option value="Indica">Indica</option>
-                    <option value="Indica Dominant">Indica Dominant</option>
-                    <option value="Sativa">Sativa</option>
-                    <option value="Sativa Dominant">Sativa Dominant</option>
-                </select>
-            </div>
-            
-            <div class="rating-group">
-                <label for="taste">Taste:</label>
-                <input type="number" id="taste" name="taste" min="0.01" max="5.00" step="0.01" required>
-            </div>
-
-            <div class="rating-group">
-                <label for="consistency">Consistency:</label>
-                <input type="number" id="consistency" name="consistency" min="0.01" max="5.00" step="0.01" required>
-            </div>
-
-            <div class="rating-group">
-                <label for="smell">Smell:</label>
-                <input type="number" id="smell" name="smell" min="0.01" max="5.00" step="0.01" required>
-            </div>
-
-            <div class="rating-group">
-                <label for="effect">Effect:</label>
-                <input type="number" id="effect" name="effect" min="0.01" max="5.00" step="0.01" required>
-            </div>
-
-            <button type="submit">Add Strain Ranking</button>
-        </form>
-        
-        <!-- Hier werden die Strain-Items angezeigt -->
-        <div id="strainList" class="strain-list"></div>
+      <!-- Data Actions (Import/Export) -->
+      <div class="sheet-section">
+        <h3>Data Management</h3>
+        <div class="data-actions">
+          <button id="exportButton" class="export-btn">Export</button>
+          <button id="importButton" class="import-btn">Import</button>
+          <input type="file" id="importFile" accept=".json" class="hidden-file" />
+        </div>
+      </div>
     </div>
 
-    <!-- Footer mit Verlinkung auf Telegram und GitHub -->
-    <footer>
-        <p>Made 🥦 by <strong>DrShift</strong></p>
-        <a href="https://t.me/rotation77" target="_blank">
-            <!-- Telegram-Logo (Alternative Quelle) -->
-            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" class="icon">
-        </a>
-        <a href="https://github.com/DoktorShift" target="_blank">
-            <!-- GitHub-Logo (SVG) -->
-            <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub" class="icon">
-        </a>
-    </footer>
+    <!-- ===== MAIN GRID: (Add/Edit Form + StoreView) ===== -->
+    <div class="main-grid">
+      <!-- LEFT: AddStrainForm container -->
+      <div id="addStrainFormContainer" class="left-panel"></div>
+      <!-- RIGHT: StoreView container -->
+      <div id="storeViewContainer" class="right-panel"></div>
+    </div>
+  </div>
 
-    <!-- Einbindung der JavaScript-Datei -->
-    <script src="app.js"></script>
+  <!-- MODAL for full image preview -->
+  <div id="imgModal" class="modal">
+    <span id="modalClose" class="modal-close">&times;</span>
+    <img id="modalImg" class="modal-content-img" alt="Full Preview" />
+  </div>
+
+  <!-- Our main logic -->
+  <script src="app.js"></script>
 </body>
 </html>
