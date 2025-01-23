@@ -1,46 +1,60 @@
 /******************************************/
 /**       GLOBAL DEMO DATA + STATE       **/
 /******************************************/
-let stores = ["Green Store", "Herbal Haven"];
-let allStrains = [
-  {
-    id: "1",
-    name: "Purple Haze",
-    type: "Sativa",
-    taste: 8.5,
-    consistency: 7.5,
-    smell: 9.0,
-    effect: 8.0,
-    store: "Green Store",
-    photo: "/placeholder.svg?height=400&width=600",
-  },
-  {
-    id: "2",
-    name: "OG Kush",
-    type: "Hybrid",
-    taste: 9.0,
-    consistency: 8.5,
-    smell: 8.0,
-    effect: 9.5,
-    store: "Herbal Haven",
-    photo: "/placeholder.svg?height=400&width=600",
-  },
-];
 
-// "viewMode" can be "all" or "by-store"
-let viewMode = "by-store";
+// Attempt to load from localStorage, else use defaults
+let savedStores = localStorage.getItem("budstats_stores");
+let savedStrains = localStorage.getItem("budstats_strains");
 
-/******************************************/
-/**             ON LOAD INIT             **/
-/******************************************/
+// Use capitalized type values to match <select> ("Sativa", "Indica", "Hybrid")
+let stores = savedStores
+  ? JSON.parse(savedStores)
+  : ["Green Store", "Herbal Haven"];
+
+let allStrains = savedStrains
+  ? JSON.parse(savedStrains)
+  : [
+      {
+        id: "1",
+        name: "Purple Haze",
+        type: "Sativa",
+        taste: 8.5,
+        consistency: 7.5,
+        smell: 9.0,
+        effect: 8.0,
+        store: "Green Store",
+        photo: "/placeholder.svg?height=400&width=600",
+      },
+      {
+        id: "2",
+        name: "OG Kush",
+        type: "Hybrid",
+        taste: 9.0,
+        consistency: 8.5,
+        smell: 8.0,
+        effect: 9.5,
+        store: "Herbal Haven",
+        photo: "/placeholder.svg?height=400&width=600",
+      },
+    ];
+
+let viewMode = "by-store"; // "all" or "by-store"
+let editingStrainId = null; // track if we are editing a strain
+
 document.addEventListener("DOMContentLoaded", () => {
-  initSideSheet();
-  renderStoreButtons();  // initially fill store list
-  renderAddStrainForm(); // show "Add Strain" form
-  renderStoreView();     // show "By Store" or "All"
+  // 1) Show loading screen for ~2 seconds
+  setTimeout(() => {
+    document.getElementById("loadingScreen").style.display = "none"; // hide loading
+    document.getElementById("appContainer").classList.remove("hidden"); // show app
+  }, 2000);
 
-  initDataActions();     // import/export stubs
-  initImageModal();      // sets up the full-size image viewer
+  // 2) Initialize everything
+  initSideSheet();
+  renderStoreButtons();
+  renderAddStrainForm();
+  renderStoreView();
+  initDataActions();
+  initImageModal();
 });
 
 /******************************************/
@@ -58,7 +72,7 @@ function initSideSheet() {
     sideSheet.classList.remove("show");
   });
 
-  // close if user clicks outside
+  // close if clicking outside
   document.addEventListener("click", (e) => {
     if (!sideSheet.contains(e.target) && !sheetTrigger.contains(e.target)) {
       sideSheet.classList.remove("show");
@@ -74,36 +88,46 @@ function renderStoreButtons() {
   container.innerHTML = "";
 
   stores.forEach((store) => {
-    const btn = document.createElement("button");
-    btn.className = "store-item-btn";
-    btn.innerHTML = `
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2" stroke-linecap="round"
-           stroke-linejoin="round">
-        <path d="M3 7l1 12a2 2 0 002 2h12a2 2 0 002-2l1-12H3z"/>
-      </svg>
-      <span>${store}</span>
-    `;
-    container.appendChild(btn);
+    const storeItem = document.createElement("div");
+    storeItem.className = "store-item";
+
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "store-name";
+    nameSpan.textContent = store;
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "delete-store-btn";
+    delBtn.innerHTML = "&times;";
+    delBtn.title = "Delete this store";
+    delBtn.onclick = () => {
+      if (confirm(`Remove store "${store}" from the list?`)) {
+        stores = stores.filter((s) => s !== store);
+        localStorage.setItem("budstats_stores", JSON.stringify(stores));
+        renderStoreButtons();
+        renderAddStrainForm();
+      }
+    };
+
+    storeItem.appendChild(nameSpan);
+    storeItem.appendChild(delBtn);
+    container.appendChild(storeItem);
   });
 
-  // Add store
   const addStoreBtn = document.getElementById("addStoreButton");
   const newStoreInput = document.getElementById("newStoreInput");
   addStoreBtn.onclick = () => {
     const val = newStoreInput.value.trim();
     if (!val) return;
     stores.push(val);
+    localStorage.setItem("budstats_stores", JSON.stringify(stores));
     newStoreInput.value = "";
-    // Re-render store buttons
     renderStoreButtons();
-    // Also re-render form so new store is in the dropdown
     renderAddStrainForm();
   };
 }
 
 /******************************************/
-/**         ADD STRAIN FORM LOGIC        **/
+/**         ADD/EDIT STRAIN FORM         **/
 /******************************************/
 function renderAddStrainForm() {
   const container = document.getElementById("addStrainFormContainer");
@@ -112,8 +136,10 @@ function renderAddStrainForm() {
   const formDiv = document.createElement("div");
   formDiv.className = "form-card";
 
+  const headingText = editingStrainId ? "Edit Strain" : "Add New Strain";
+
   formDiv.innerHTML = `
-    <h2>Add New Strain</h2>
+    <h2>${headingText}</h2>
     <form id="strainForm">
       <!-- Strain Name -->
       <div class="add-form-group">
@@ -126,11 +152,9 @@ function renderAddStrainForm() {
         <label>Strain Type</label>
         <select id="strainType" required>
           <option value="" disabled selected hidden>Select type</option>
-          <option value="indica">Indica</option>
-          <option value="indica">Indica dominant</option>
-          <option value="sativa">Sativa</option>
-          <option value="sativa">Sativa dominant</option>
-          <option value="hybrid">Hybrid</option>
+          <option value="Indica">Indica</option>
+          <option value="Sativa">Sativa</option>
+          <option value="Hybrid">Hybrid</option>
         </select>
       </div>
 
@@ -158,13 +182,14 @@ function renderAddStrainForm() {
       </div>
 
       <!-- Submit -->
-      <button type="submit" class="add-form-submit">Add Strain</button>
+      <button type="submit" class="add-form-submit" id="submitBtn">
+        ${editingStrainId ? "Save Changes" : "Add Strain"}
+      </button>
     </form>
   `;
 
   container.appendChild(formDiv);
 
-  // dynamic range value updates
   ["taste","consistency","smell","effect"].forEach((attr) => {
     const range = formDiv.querySelector(`#${attr}`);
     const valSpan = formDiv.querySelector(`#${attr}Value`);
@@ -173,15 +198,30 @@ function renderAddStrainForm() {
     });
   });
 
-  // handle form submit
   const strainForm = formDiv.querySelector("#strainForm");
   const photoInput = formDiv.querySelector("#strainPhoto");
+  const submitBtn = formDiv.querySelector("#submitBtn");
+
+  // If editing, populate fields
+  if (editingStrainId) {
+    const existing = allStrains.find((s) => s.id === editingStrainId);
+    if (existing) {
+      strainForm.querySelector("#strainName").value = existing.name;
+      strainForm.querySelector("#strainType").value = existing.type;
+      strainForm.querySelector("#strainStore").value = existing.store;
+      ["taste","consistency","smell","effect"].forEach((attr) => {
+        strainForm.querySelector(`#${attr}`).value = existing[attr];
+        formDiv.querySelector(`#${attr}Value`).textContent = existing[attr];
+      });
+    }
+  }
 
   strainForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const newStrain = {
-      id: Date.now().toString(),
+    // create or replace strain
+    const newOrEditedStrain = {
+      id: editingStrainId ? editingStrainId : Date.now().toString(),
       name: strainForm.querySelector("#strainName").value.trim(),
       type: strainForm.querySelector("#strainType").value,
       store: strainForm.querySelector("#strainStore").value,
@@ -192,27 +232,51 @@ function renderAddStrainForm() {
       photo: null,
     };
 
-    // if there's a photo
+    // If there's a photo
     const file = photoInput.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = function(ev) {
-        newStrain.photo = ev.target?.result; // base64
-        addAndRefresh(newStrain);
+        newOrEditedStrain.photo = ev.target?.result; // base64
+        finalize(newOrEditedStrain);
       };
-      reader.readAsDataURL(file); // crucial for images
+      reader.readAsDataURL(file);
     } else {
-      addAndRefresh(newStrain);
+      // If editing and no new photo was chosen, keep old photo
+      if (editingStrainId) {
+        const old = allStrains.find((s) => s.id === editingStrainId);
+        if (old?.photo) {
+          newOrEditedStrain.photo = old.photo;
+        }
+      }
+      finalize(newOrEditedStrain);
     }
 
-    function addAndRefresh(str) {
-      allStrains.push(str);
+    function finalize(strObj) {
+      if (editingStrainId) {
+        // find & update
+        const idx = allStrains.findIndex((s) => s.id === editingStrainId);
+        if (idx >= 0) {
+          allStrains[idx] = strObj;
+        }
+        editingStrainId = null;
+      } else {
+        // new
+        allStrains.push(strObj);
+      }
+
+      // save to localStorage
+      localStorage.setItem("budstats_strains", JSON.stringify(allStrains));
+
+      // reset
       strainForm.reset();
       ["taste","consistency","smell","effect"].forEach((attr) => {
         formDiv.querySelector(`#${attr}Value`).textContent = "5";
       });
-      // re-render store view
+      submitBtn.textContent = "Add Strain";
+
       renderStoreView();
+      renderAddStrainForm(); // go back to add mode
     }
   });
 }
@@ -235,11 +299,16 @@ function renderStoreView() {
 
   const allBtn = btnRow.querySelector("#allViewBtn");
   const byStoreBtn = btnRow.querySelector("#byStoreBtn");
-  allBtn.onclick = () => { viewMode = "all"; renderStoreView(); };
-  byStoreBtn.onclick = () => { viewMode = "by-store"; renderStoreView(); };
+  allBtn.onclick = () => {
+    viewMode = "all";
+    renderStoreView();
+  };
+  byStoreBtn.onclick = () => {
+    viewMode = "by-store";
+    renderStoreView();
+  };
 
   if (viewMode === "all") {
-    // show all in grid
     const grid = document.createElement("div");
     grid.className = "strains-grid";
     allStrains.forEach((s) => {
@@ -247,7 +316,6 @@ function renderStoreView() {
     });
     container.appendChild(grid);
   } else {
-    // group by store
     const groups = groupStrainsByStore();
     Object.keys(groups).forEach((store) => {
       const cardDiv = document.createElement("div");
@@ -304,7 +372,6 @@ function renderStoreView() {
   }
 }
 
-// group strains by store
 function groupStrainsByStore() {
   const map = {};
   allStrains.forEach((s) => {
@@ -317,12 +384,25 @@ function groupStrainsByStore() {
 /******************************************/
 /**          CREATE STRAIN CARD          **/
 /******************************************/
+
+// Convert a base64 DataURL to a File (for advanced web share with images)
+function dataURLtoFile(dataURL, filename) {
+  if (!dataURL.startsWith("data:")) return null;
+  const arr = dataURL.split(",");
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+}
+
 function createStrainCard(strain) {
-  // get average rating
   const values = [strain.taste, strain.consistency, strain.smell, strain.effect];
   const avg = parseFloat((values.reduce((a,b)=>a+b, 0) / values.length).toFixed(1));
 
-  // color for circle
   function getRatingClass(r) {
     if (r >= 8.5) return "bg-gradient-high";
     if (r >= 7)   return "bg-gradient-good";
@@ -347,7 +427,6 @@ function createStrainCard(strain) {
     img.src = strain.photo;
     img.alt = strain.name;
     img.className = "strain-photo";
-    // On click, show modal full image
     img.addEventListener("click", () => openImageModal(strain.photo));
     card.appendChild(img);
   } else {
@@ -361,10 +440,9 @@ function createStrainCard(strain) {
   const contentDiv = document.createElement("div");
   contentDiv.className = "strain-card-content";
 
-  // header (name + type)
+  // header
   const headerDiv = document.createElement("div");
   headerDiv.className = "strain-card-header";
-
   const nameSpan = document.createElement("span");
   nameSpan.className = "strain-name";
   nameSpan.textContent = strain.name;
@@ -394,12 +472,13 @@ function createStrainCard(strain) {
 
   // rating lines
   const ratingLinesDiv = document.createElement("div");
-  [
+  const categories = [
     { label: "Taste", value: strain.taste },
     { label: "Consistency", value: strain.consistency },
     { label: "Smell", value: strain.smell },
     { label: "Effect", value: strain.effect },
-  ].forEach((r) => {
+  ];
+  categories.forEach((r) => {
     const line = document.createElement("div");
     line.className = "rating-line";
     line.innerHTML = `
@@ -418,11 +497,11 @@ function createStrainCard(strain) {
   });
   contentDiv.appendChild(ratingLinesDiv);
 
-  // actions
+  // actions row
   const actionsDiv = document.createElement("div");
   actionsDiv.className = "strain-actions";
 
-  // share
+  // SHARE
   const shareBtn = document.createElement("button");
   shareBtn.className = "action-btn";
   shareBtn.innerHTML = `
@@ -435,10 +514,65 @@ function createStrainCard(strain) {
       <path d="M15.41 6.51l-6.82 3.98"></path>
     </svg>
   `;
-  shareBtn.onclick = () => alert("Share not implemented.");
+  shareBtn.onclick = async () => {
+    // Build a text with full details
+    const details = `
+Strain: ${strain.name}
+Store: ${strain.store}
+Taste: ${strain.taste}
+Consistency: ${strain.consistency}
+Smell: ${strain.smell}
+Effect: ${strain.effect}
+---
+Average Rating: ${avg}
+    `.trim();
+
+    if (!navigator.share) {
+      alert("Your browser does not support Web Share. \nTry copying the info or using a mobile device.");
+      return;
+    }
+
+    // If the strain has a photo, try to share the file
+    if (strain.photo) {
+      try {
+        const file = dataURLtoFile(strain.photo, `${strain.name.replace(/\s+/g, "_")}.jpg`);
+        if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+          // Browser supports file sharing
+          await navigator.share({
+            title: `BudStats - ${strain.name}`,
+            text: details,
+            files: [file],
+          });
+          console.log("Shared successfully (with image).");
+        } else {
+          // Fallback to text-only share
+          await navigator.share({
+            title: `BudStats - ${strain.name}`,
+            text: details,
+          });
+          console.log("Shared successfully (text-only).");
+        }
+      } catch (err) {
+        console.error("Error in share with image:", err);
+        // fallback to text
+        await navigator.share({ title: `BudStats - ${strain.name}`, text: details });
+      }
+    } else {
+      // no photo, just do text share
+      try {
+        await navigator.share({
+          title: `BudStats - ${strain.name}`,
+          text: details,
+        });
+        console.log("Shared successfully (no image).");
+      } catch (err) {
+        console.error("Share failed:", err);
+      }
+    }
+  };
   actionsDiv.appendChild(shareBtn);
 
-  // edit
+  // EDIT
   const editBtn = document.createElement("button");
   editBtn.className = "action-btn";
   editBtn.innerHTML = `
@@ -448,10 +582,13 @@ function createStrainCard(strain) {
       <path d="M16.5 3.5l4 4L7 21H3v-4L16.5 3.5z"></path>
     </svg>
   `;
-  editBtn.onclick = () => alert(`Edit: ${strain.name}`);
+  editBtn.onclick = () => {
+    editingStrainId = strain.id;
+    renderAddStrainForm(); // re-render form in edit mode
+  };
   actionsDiv.appendChild(editBtn);
 
-  // delete
+  // DELETE
   const deleteBtn = document.createElement("button");
   deleteBtn.className = "action-btn action-btn-danger";
   deleteBtn.innerHTML = `
@@ -466,6 +603,7 @@ function createStrainCard(strain) {
   deleteBtn.onclick = () => {
     if (confirm(`Delete strain "${strain.name}"?`)) {
       allStrains = allStrains.filter((x) => x.id !== strain.id);
+      localStorage.setItem("budstats_strains", JSON.stringify(allStrains));
       renderStoreView();
     }
   };
@@ -492,81 +630,4 @@ function initDataActions() {
 
     const link = document.createElement("a");
     link.href = url;
-    link.download = "budstats-data.json";
-    link.click();
-    URL.revokeObjectURL(url);
-  });
-
-  importBtn.addEventListener("click", () => {
-    importFile.click();
-  });
-
-  importFile.addEventListener("change", (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      try {
-        const parsed = JSON.parse(ev.target.result);
-        if (!parsed.stores || !parsed.strains) {
-          alert("Invalid JSON. Must be {stores:[], strains:[]}");
-          return;
-        }
-        // Merge or Overwrite?
-        if (confirm("Merge data? (Cancel to overwrite)")) {
-          // Merge
-          stores = Array.from(new Set([...stores, ...parsed.stores]));
-          allStrains = [...allStrains, ...parsed.strains];
-          // remove duplicates by ID
-          const seen = new Set();
-          allStrains = allStrains.filter((st) => {
-            if (seen.has(st.id)) return false;
-            seen.add(st.id);
-            return true;
-          });
-        } else {
-          // Overwrite
-          stores = parsed.stores;
-          allStrains = parsed.strains;
-        }
-        renderStoreButtons();
-        renderAddStrainForm();
-        renderStoreView();
-        alert("Import successful!");
-      } catch (err) {
-        console.error(err);
-        alert("Error reading JSON file.");
-      }
-    };
-    reader.readAsText(file);
-  });
-}
-
-/******************************************/
-/**           IMAGE MODAL LOGIC          **/
-/******************************************/
-let modal, modalImg, modalClose;
-function initImageModal() {
-  modal = document.getElementById("imgModal");
-  modalImg = document.getElementById("modalImg");
-  modalClose = document.getElementById("modalClose");
-
-  modalClose.addEventListener("click", () => {
-    closeImageModal();
-  });
-
-  // close if user clicks outside the image
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      closeImageModal();
-    }
-  });
-}
-function openImageModal(imgSrc) {
-  modalImg.src = imgSrc;
-  modal.style.display = "block";
-}
-function closeImageModal() {
-  modal.style.display = "none";
-  modalImg.src = "";
-}
+    link.download = "budstats-data.json"
