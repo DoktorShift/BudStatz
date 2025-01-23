@@ -1,101 +1,126 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BudStats</title>
-    <!-- Einbindung der Material Icons -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-    <!-- Einbindung der CSS-Datei -->
-    <link rel="stylesheet" href="styles.css">
-    <!-- Favicon für mobile Geräte -->
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/DoktorShift/images/main/budstaz/logo_budstats_transparent.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>BudStats</title>
+
+  <!-- Tailwind CDN (v3) -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css"
+    rel="stylesheet"
+  />
+
+  <!-- Our custom CSS -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-    <!-- Hamburger-Menü -->
-    <div class="menu-container">
-        <span class="material-symbols-outlined menu-icon" id="menuIcon">menu</span>
-        <div class="dropdown-menu" id="dropdownMenu">
-            <input type="file" id="importInput" accept=".json" style="display:none;" />
-            <div class="menu-item" id="importData">
-                <span class="material-symbols-outlined">file_upload</span>
-                <span>Importieren</span>
-            </div>
-            <div class="menu-item" id="exportData">
-                <span class="material-symbols-outlined">file_download</span>
-                <span>Exportieren</span>
-            </div>
-        </div>
+<body class="min-h-screen bg-gradient-to-b from-emerald-50 to-emerald-100 dark:from-emerald-950 dark:to-emerald-900">
+
+  <!-- MAIN CONTAINER -->
+  <div class="container mx-auto px-4 py-8" id="appContainer">
+    <!-- ============= NAV BAR ============= -->
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-4xl font-bold text-emerald-800 dark:text-emerald-200">
+        BudStats
+      </h1>
+      <!-- The "burger menu" to open side sheet -->
+      <button
+        id="sheetTrigger"
+        class="bg-transparent border-none text-gray-700 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-800 p-2 rounded"
+      >
+        <!-- Just an SVG for menu icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
     </div>
 
-    <div class="container">
-        <!-- Logo Section -->
-        <div class="logo-container">
-            <img src="https://raw.githubusercontent.com/DoktorShift/images/main/budstaz/logo_budstats_transparent.png" alt="BudStats Logo">
+    <!-- SIDE SHEET (hidden by default) -->
+    <div
+      id="sideSheet"
+      class="hidden fixed top-0 right-0 w-80 max-w-full h-full bg-white dark:bg-gray-900 shadow-lg p-4 z-50 transform translate-x-full transition-transform"
+    >
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-emerald-700 dark:text-emerald-300">Settings</h2>
+        <button
+          id="closeSheetBtn"
+          class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-2xl leading-none"
+        >
+          &times;
+        </button>
+      </div>
+
+      <!-- "Store Selector" Card -->
+      <div class="backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 rounded p-4 mb-6">
+        <h3 class="text-xl font-bold text-emerald-700 dark:text-emerald-300 mb-4">Stores</h3>
+        <div class="flex gap-2 mb-4">
+          <input
+            type="text"
+            id="newStoreInput"
+            placeholder="Add new store..."
+            class="border-emerald-200 focus:border-emerald-500 rounded p-2 flex-1"
+          />
+          <button
+            id="addStoreButton"
+            class="border border-emerald-200 text-sm p-2 rounded hover:bg-emerald-50 dark:hover:bg-emerald-800"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 4v16m8-8H4" />
+            </svg>
+          </button>
         </div>
-        
-        <h1>BudStats</h1>
-        
-        <form id="ratingForm">
-            <div>
-                <label for="strain">Strain Name:</label>
-                <input type="text" id="strain" name="strain" required>
-            </div>
+        <div id="storeButtons" class="flex flex-wrap gap-2"></div>
+      </div>
 
-            <!-- Neues Feld für den Strain-Typ -->
-            <div>
-                <label for="strainType">Strain Type:</label>
-                <select id="strainType" name="strainType" required>
-                    <option value="" disabled selected hidden>Select Type</option>
-                    <option value="Hybrid">Hybrid</option>
-                    <option value="Indica">Indica</option>
-                    <option value="Indica Dominant">Indica Dominant</option>
-                    <option value="Sativa">Sativa</option>
-                    <option value="Sativa Dominant">Sativa Dominant</option>
-                </select>
-            </div>
-            
-            <div class="rating-group">
-                <label for="taste">Taste:</label>
-                <input type="number" id="taste" name="taste" min="0.01" max="5.00" step="0.01" required>
-            </div>
-
-            <div class="rating-group">
-                <label for="consistency">Consistency:</label>
-                <input type="number" id="consistency" name="consistency" min="0.01" max="5.00" step="0.01" required>
-            </div>
-
-            <div class="rating-group">
-                <label for="smell">Smell:</label>
-                <input type="number" id="smell" name="smell" min="0.01" max="5.00" step="0.01" required>
-            </div>
-
-            <div class="rating-group">
-                <label for="effect">Effect:</label>
-                <input type="number" id="effect" name="effect" min="0.01" max="5.00" step="0.01" required>
-            </div>
-
-            <button type="submit">Add Strain Ranking</button>
-        </form>
-        
-        <!-- Hier werden die Strain-Items angezeigt -->
-        <div id="strainList" class="strain-list"></div>
+      <!-- Data Actions (Import/Export) -->
+      <div class="backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 rounded p-4">
+        <h3 class="text-xl font-bold text-emerald-700 dark:text-emerald-300 mb-4">
+          Data Management
+        </h3>
+        <div class="flex gap-4">
+          <button
+            id="exportButton"
+            class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded p-2 flex items-center justify-center"
+          >
+            <!-- Download icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 4v16m8-8H4" />
+            </svg>
+            Export
+          </button>
+          <button
+            id="importButton"
+            class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded p-2 flex items-center justify-center"
+          >
+            <!-- Upload icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 20V4m8 8H4" />
+            </svg>
+            Import
+          </button>
+          <input type="file" id="importFile" accept=".json" class="hidden" />
+        </div>
+      </div>
     </div>
 
-    <!-- Footer mit Verlinkung auf Telegram und GitHub -->
-    <footer>
-        <p>Made 🥦 by <strong>DrShift</strong></p>
-        <a href="https://t.me/rotation77" target="_blank">
-            <!-- Telegram-Logo (Alternative Quelle) -->
-            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" class="icon">
-        </a>
-        <a href="https://github.com/DoktorShift" target="_blank">
-            <!-- GitHub-Logo (SVG) -->
-            <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub" class="icon">
-        </a>
-    </footer>
+    <!-- MAIN GRID (AddStrainForm + StoreView) -->
+    <div class="grid gap-8 md:grid-cols-[350px,1fr]">
+      <!-- Left: AddStrainForm container -->
+      <div id="addStrainFormContainer" class="space-y-6"></div>
+      <!-- Right: "StoreView" container -->
+      <div id="storeViewContainer" class="space-y-6"></div>
+    </div>
+  </div>
 
-    <!-- Einbindung der JavaScript-Datei -->
-    <script src="app.js"></script>
+  <!-- Our main logic -->
+  <script src="app.js"></script>
 </body>
 </html>
