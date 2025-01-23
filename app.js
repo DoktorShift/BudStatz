@@ -6,6 +6,7 @@
 let savedStores = localStorage.getItem("budstats_stores");
 let savedStrains = localStorage.getItem("budstats_strains");
 
+// 1) We unify the "type" naming so form <select> uses "Sativa", "Indica", "Hybrid" capitalized
 let stores = savedStores
   ? JSON.parse(savedStores)
   : ["Green Store", "Herbal Haven"];
@@ -16,6 +17,7 @@ let allStrains = savedStrains
       {
         id: "1",
         name: "Purple Haze",
+        // unify to capital "Sativa"
         type: "Sativa",
         taste: 8.5,
         consistency: 7.5,
@@ -163,9 +165,9 @@ function renderAddStrainForm() {
         <label>Strain Type</label>
         <select id="strainType" required>
           <option value="" disabled selected hidden>Select type</option>
-          <option value="indica">Indica</option>
-          <option value="sativa">Sativa</option>
-          <option value="hybrid">Hybrid</option>
+          <option value="Indica">Indica</option>
+          <option value="Sativa">Sativa</option>
+          <option value="Hybrid">Hybrid</option>
         </select>
       </div>
 
@@ -388,7 +390,6 @@ function renderStoreView() {
   }
 }
 
-// group strains by store
 function groupStrainsByStore() {
   const map = {};
   allStrains.forEach((s) => {
@@ -519,7 +520,21 @@ function createStrainCard(strain) {
       <path d="M15.41 6.51l-6.82 3.98"></path>
     </svg>
   `;
-  shareBtn.onclick = () => alert("Share not implemented.");
+  shareBtn.onclick = () => {
+    if (navigator.share) {
+      // If the browser/device supports the Web Share API
+      navigator.share({
+        title: `Strain: ${strain.name}`,
+        text: `Check out ${strain.name} from ${strain.store}!\nType: ${strain.type}, Rating: ${avg}\n`,
+      }).then(() => {
+        console.log("Shared successfully!");
+      }).catch((err) => {
+        console.error("Sharing failed:", err);
+      });
+    } else {
+      alert("Your browser does not support Web Share. \nTry copying the info or using a mobile device.");
+    }
+  };
   actionsDiv.appendChild(shareBtn);
 
   // edit
