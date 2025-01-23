@@ -6,7 +6,7 @@
 let savedStores = localStorage.getItem("budstats_stores");
 let savedStrains = localStorage.getItem("budstats_strains");
 
-// 1) We unify the "type" naming so form <select> uses "Sativa", "Indica", "Hybrid" capitalized
+// Use capitalized type values to match <select> ("Sativa", "Indica", "Hybrid")
 let stores = savedStores
   ? JSON.parse(savedStores)
   : ["Green Store", "Herbal Haven"];
@@ -17,7 +17,6 @@ let allStrains = savedStrains
       {
         id: "1",
         name: "Purple Haze",
-        // unify to capital "Sativa"
         type: "Sativa",
         taste: 8.5,
         consistency: 7.5,
@@ -34,24 +33,19 @@ let allStrains = savedStrains
         consistency: 8.5,
         smell: 8.0,
         effect: 9.5,
-        store: "Herbal Haven",
+        store: "Homegrow",
         photo: "/placeholder.svg?height=400&width=600",
       },
     ];
 
-// "viewMode" can be "all" or "by-store"
-let viewMode = "by-store";
-
-// For editing a strain
-let editingStrainId = null;
+let viewMode = "by-store"; // "all" or "by-store"
+let editingStrainId = null; // track if we are editing a strain
 
 document.addEventListener("DOMContentLoaded", () => {
   // 1) Show loading screen for ~2 seconds
   setTimeout(() => {
-    // Hide loading
-    document.getElementById("loadingScreen").style.display = "none";
-    // Show app
-    document.getElementById("appContainer").classList.remove("hidden");
+    document.getElementById("loadingScreen").style.display = "none"; // hide loading
+    document.getElementById("appContainer").classList.remove("hidden"); // show app
   }, 2000);
 
   // 2) Initialize everything
@@ -78,7 +72,7 @@ function initSideSheet() {
     sideSheet.classList.remove("show");
   });
 
-  // close if user clicks outside
+  // close if clicking outside
   document.addEventListener("click", (e) => {
     if (!sideSheet.contains(e.target) && !sheetTrigger.contains(e.target)) {
       sideSheet.classList.remove("show");
@@ -94,7 +88,6 @@ function renderStoreButtons() {
   container.innerHTML = "";
 
   stores.forEach((store) => {
-    // each store is a small "chip" with a delete button
     const storeItem = document.createElement("div");
     storeItem.className = "store-item";
 
@@ -108,11 +101,8 @@ function renderStoreButtons() {
     delBtn.title = "Delete this store";
     delBtn.onclick = () => {
       if (confirm(`Remove store "${store}" from the list?`)) {
-        // Remove from local array
         stores = stores.filter((s) => s !== store);
-        // Save to localStorage
         localStorage.setItem("budstats_stores", JSON.stringify(stores));
-        // Re-render
         renderStoreButtons();
         renderAddStrainForm();
       }
@@ -123,7 +113,6 @@ function renderStoreButtons() {
     container.appendChild(storeItem);
   });
 
-  // Add store
   const addStoreBtn = document.getElementById("addStoreButton");
   const newStoreInput = document.getElementById("newStoreInput");
   addStoreBtn.onclick = () => {
@@ -132,7 +121,6 @@ function renderStoreButtons() {
     stores.push(val);
     localStorage.setItem("budstats_stores", JSON.stringify(stores));
     newStoreInput.value = "";
-    // Re-render store list + form
     renderStoreButtons();
     renderAddStrainForm();
   };
@@ -148,7 +136,6 @@ function renderAddStrainForm() {
   const formDiv = document.createElement("div");
   formDiv.className = "form-card";
 
-  // If editing, rename the heading
   const headingText = editingStrainId ? "Edit Strain" : "Add New Strain";
 
   formDiv.innerHTML = `
@@ -186,7 +173,7 @@ function renderAddStrainForm() {
       ${["taste","consistency","smell","effect"].map(attr => `
       <div class="add-form-group">
         <label>${attr.charAt(0).toUpperCase() + attr.slice(1)} (0-10)</label>
-        <input type="range" min="0" max="10" step="0.5" id="${attr}" value="5" />
+        <input type="range" min="0" max="10" step="0.1" id="${attr}" value="5" />
         <div class="range-value" id="${attr}Value">5</div>
       </div>`).join("")}
 
@@ -205,7 +192,6 @@ function renderAddStrainForm() {
 
   container.appendChild(formDiv);
 
-  // dynamic range value updates
   ["taste","consistency","smell","effect"].forEach((attr) => {
     const range = formDiv.querySelector(`#${attr}`);
     const valSpan = formDiv.querySelector(`#${attr}Value`);
@@ -214,12 +200,11 @@ function renderAddStrainForm() {
     });
   });
 
-  // handle form submit
   const strainForm = formDiv.querySelector("#strainForm");
   const photoInput = formDiv.querySelector("#strainPhoto");
   const submitBtn = formDiv.querySelector("#submitBtn");
 
-  // If in editing mode, fill the fields from existing data
+  // If editing, populate fields
   if (editingStrainId) {
     const existing = allStrains.find((s) => s.id === editingStrainId);
     if (existing) {
@@ -292,7 +277,6 @@ function renderAddStrainForm() {
       });
       submitBtn.textContent = "Add Strain";
 
-      // re-render
       renderStoreView();
       renderAddStrainForm(); // go back to add mode
     }
@@ -327,7 +311,6 @@ function renderStoreView() {
   };
 
   if (viewMode === "all") {
-    // show all in grid
     const grid = document.createElement("div");
     grid.className = "strains-grid";
     allStrains.forEach((s) => {
@@ -335,7 +318,6 @@ function renderStoreView() {
     });
     container.appendChild(grid);
   } else {
-    // group by store
     const groups = groupStrainsByStore();
     Object.keys(groups).forEach((store) => {
       const cardDiv = document.createElement("div");
@@ -404,12 +386,25 @@ function groupStrainsByStore() {
 /******************************************/
 /**          CREATE STRAIN CARD          **/
 /******************************************/
+
+// Convert a base64 DataURL to a File (for advanced web share with images)
+function dataURLtoFile(dataURL, filename) {
+  if (!dataURL.startsWith("data:")) return null;
+  const arr = dataURL.split(",");
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+}
+
 function createStrainCard(strain) {
-  // get average rating
   const values = [strain.taste, strain.consistency, strain.smell, strain.effect];
   const avg = parseFloat((values.reduce((a,b)=>a+b, 0) / values.length).toFixed(1));
 
-  // color for circle
   function getRatingClass(r) {
     if (r >= 8.5) return "bg-gradient-high";
     if (r >= 7)   return "bg-gradient-good";
@@ -434,7 +429,6 @@ function createStrainCard(strain) {
     img.src = strain.photo;
     img.alt = strain.name;
     img.className = "strain-photo";
-    // On click, show modal full image
     img.addEventListener("click", () => openImageModal(strain.photo));
     card.appendChild(img);
   } else {
@@ -448,10 +442,9 @@ function createStrainCard(strain) {
   const contentDiv = document.createElement("div");
   contentDiv.className = "strain-card-content";
 
-  // header (name + type)
+  // header
   const headerDiv = document.createElement("div");
   headerDiv.className = "strain-card-header";
-
   const nameSpan = document.createElement("span");
   nameSpan.className = "strain-name";
   nameSpan.textContent = strain.name;
@@ -481,12 +474,13 @@ function createStrainCard(strain) {
 
   // rating lines
   const ratingLinesDiv = document.createElement("div");
-  [
+  const categories = [
     { label: "Taste", value: strain.taste },
     { label: "Consistency", value: strain.consistency },
     { label: "Smell", value: strain.smell },
     { label: "Effect", value: strain.effect },
-  ].forEach((r) => {
+  ];
+  categories.forEach((r) => {
     const line = document.createElement("div");
     line.className = "rating-line";
     line.innerHTML = `
@@ -505,11 +499,11 @@ function createStrainCard(strain) {
   });
   contentDiv.appendChild(ratingLinesDiv);
 
-  // actions
+  // actions row
   const actionsDiv = document.createElement("div");
   actionsDiv.className = "strain-actions";
 
-  // share
+  // SHARE
   const shareBtn = document.createElement("button");
   shareBtn.className = "action-btn";
   shareBtn.innerHTML = `
@@ -522,24 +516,65 @@ function createStrainCard(strain) {
       <path d="M15.41 6.51l-6.82 3.98"></path>
     </svg>
   `;
-  shareBtn.onclick = () => {
-    if (navigator.share) {
-      // If the browser/device supports the Web Share API
-      navigator.share({
-        title: `Strain: ${strain.name}`,
-        text: `Check out ${strain.name} from ${strain.store}!\nType: ${strain.type}, Rating: ${avg}\n`,
-      }).then(() => {
-        console.log("Shared successfully!");
-      }).catch((err) => {
-        console.error("Sharing failed:", err);
-      });
-    } else {
+  shareBtn.onclick = async () => {
+    // Build a text with full details
+    const details = `
+Strain: ${strain.name}
+Store: ${strain.store}
+Taste: ${strain.taste}
+Consistency: ${strain.consistency}
+Smell: ${strain.smell}
+Effect: ${strain.effect}
+---
+Average Rating: ${avg}
+    `.trim();
+
+    if (!navigator.share) {
       alert("Your browser does not support Web Share. \nTry copying the info or using a mobile device.");
+      return;
+    }
+
+    // If the strain has a photo, try to share the file
+    if (strain.photo) {
+      try {
+        const file = dataURLtoFile(strain.photo, `${strain.name.replace(/\s+/g, "_")}.jpg`);
+        if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+          // Browser supports file sharing
+          await navigator.share({
+            title: `BudStats - ${strain.name}`,
+            text: details,
+            files: [file],
+          });
+          console.log("Shared successfully (with image).");
+        } else {
+          // Fallback to text-only share
+          await navigator.share({
+            title: `BudStats - ${strain.name}`,
+            text: details,
+          });
+          console.log("Shared successfully (text-only).");
+        }
+      } catch (err) {
+        console.error("Error in share with image:", err);
+        // fallback to text
+        await navigator.share({ title: `BudStats - ${strain.name}`, text: details });
+      }
+    } else {
+      // no photo, just do text share
+      try {
+        await navigator.share({
+          title: `BudStats - ${strain.name}`,
+          text: details,
+        });
+        console.log("Shared successfully (no image).");
+      } catch (err) {
+        console.error("Share failed:", err);
+      }
     }
   };
   actionsDiv.appendChild(shareBtn);
 
-  // edit
+  // EDIT
   const editBtn = document.createElement("button");
   editBtn.className = "action-btn";
   editBtn.innerHTML = `
@@ -551,11 +586,11 @@ function createStrainCard(strain) {
   `;
   editBtn.onclick = () => {
     editingStrainId = strain.id;
-    renderAddStrainForm(); // re-render the form in edit mode
+    renderAddStrainForm(); // re-render form in edit mode
   };
   actionsDiv.appendChild(editBtn);
 
-  // delete
+  // DELETE
   const deleteBtn = document.createElement("button");
   deleteBtn.className = "action-btn action-btn-danger";
   deleteBtn.innerHTML = `
@@ -591,11 +626,7 @@ function initDataActions() {
   const importFile = document.getElementById("importFile");
 
   exportBtn.addEventListener("click", () => {
-    const dataStr = JSON.stringify(
-      { stores, strains: allStrains },
-      null,
-      2
-    );
+    const dataStr = JSON.stringify({ stores, strains: allStrains }, null, 2);
     const blob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
 
@@ -639,7 +670,6 @@ function initDataActions() {
           allStrains = parsed.strains;
         }
 
-        // save to localStorage
         localStorage.setItem("budstats_stores", JSON.stringify(stores));
         localStorage.setItem("budstats_strains", JSON.stringify(allStrains));
 
@@ -669,7 +699,6 @@ function initImageModal() {
     closeImageModal();
   });
 
-  // close if user clicks outside the image
   modal.addEventListener("click", (e) => {
     if (e.target === modal) {
       closeImageModal();
