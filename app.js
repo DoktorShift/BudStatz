@@ -37,19 +37,22 @@ let allStrains = savedStrains
       },
     ];
 
-let viewMode = "by-store";        // "all" or "by-store"
-let editingStrainId = null;       // track which strain is being edited
+// "viewMode" can be "all" or "by-store"
+let viewMode = "by-store";
+
+// For editing a strain
+let editingStrainId = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   // 1) Show loading screen for ~2 seconds
   setTimeout(() => {
-    // hide loading
+    // Hide loading
     document.getElementById("loadingScreen").style.display = "none";
-    // show app
+    // Show app
     document.getElementById("appContainer").classList.remove("hidden");
   }, 2000);
 
-  // 2) After that, side sheet logic, store rendering, form, etc.
+  // 2) Initialize everything
   initSideSheet();
   renderStoreButtons();
   renderAddStrainForm();
@@ -103,8 +106,11 @@ function renderStoreButtons() {
     delBtn.title = "Delete this store";
     delBtn.onclick = () => {
       if (confirm(`Remove store "${store}" from the list?`)) {
+        // Remove from local array
         stores = stores.filter((s) => s !== store);
+        // Save to localStorage
         localStorage.setItem("budstats_stores", JSON.stringify(stores));
+        // Re-render
         renderStoreButtons();
         renderAddStrainForm();
       }
@@ -140,7 +146,7 @@ function renderAddStrainForm() {
   const formDiv = document.createElement("div");
   formDiv.className = "form-card";
 
-  // If editing, we might rename the heading
+  // If editing, rename the heading
   const headingText = editingStrainId ? "Edit Strain" : "Add New Strain";
 
   formDiv.innerHTML = `
@@ -239,12 +245,12 @@ function renderAddStrainForm() {
       photo: null,
     };
 
-    // if there's a photo
+    // If there's a photo
     const file = photoInput.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = function(ev) {
-        newOrEditedStrain.photo = ev.target?.result;
+        newOrEditedStrain.photo = ev.target?.result; // base64
         finalize(newOrEditedStrain);
       };
       reader.readAsDataURL(file);
