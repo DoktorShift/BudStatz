@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BudStats</title>
-  <!-- Linking our custom CSS -->
-  <link rel="stylesheet" href="styles.css" />
+  <!-- Include the CSS file -->
+  <link rel="stylesheet" href="styles.css">
   <!-- Favicon for mobile devices -->
   <link
     rel="apple-touch-icon"
@@ -13,26 +13,31 @@
   >
 </head>
 <body>
-
-  <!-- SPLASH SCREEN (logo-only) -->
-  <div id="splashScreen" class="splash-screen">
+  <!-- LOADING SCREEN (2 seconds) -->
+  <div id="loadingScreen">
     <img
       src="https://raw.githubusercontent.com/DoktorShift/images/main/budstaz/logo_budstats_transparent.png"
       alt="BudStats Logo"
-      class="splash-logo"
     />
   </div>
 
-  <!-- MAIN CONTAINER (hidden by splash for the first 2s) -->
-  <div class="container" id="appContainer">
+  <!-- MAIN APP CONTAINER (initially hidden) -->
+  <div class="container hidden" id="appContainer">
 
     <!-- ===== NAV BAR ===== -->
     <div class="nav-bar">
       <h1 class="app-title">BudStats</h1>
       <button class="burger-btn" id="sheetTrigger" title="Open Settings">
         <!-- "burger" icon inline SVG -->
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-             xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
@@ -52,9 +57,16 @@
           <input type="text" id="newStoreInput" placeholder="Add new store..." />
           <button id="addStoreButton" class="store-add-btn">
             <!-- plus icon -->
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <path d="M12 5v14M5 12h14"></path>
             </svg>
           </button>
