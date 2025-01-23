@@ -35,10 +35,12 @@ let viewMode = "by-store";
 /******************************************/
 document.addEventListener("DOMContentLoaded", () => {
   initSideSheet();
-  renderStoreButtons();
-  renderAddStrainForm();
-  renderStoreView();
-  initDataActions();
+  renderStoreButtons();  // initially fill store list
+  renderAddStrainForm(); // show "Add Strain" form
+  renderStoreView();     // show "By Store" or "All"
+
+  initDataActions();     // import/export stubs
+  initImageModal();      // sets up the full-size image viewer
 });
 
 /******************************************/
@@ -74,23 +76,11 @@ function renderStoreButtons() {
   stores.forEach((store) => {
     const btn = document.createElement("button");
     btn.className = "store-item-btn";
-    btn.style.cssText = `
-      border: 1px solid #ccc;
-      background-color: #f0fff4;
-      border-radius: 4px;
-      padding: 0.4rem 0.6rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      font-size: 0.8rem;
-      cursor: pointer;
-    `;
     btn.innerHTML = `
-      <!-- store icon -->
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round"
            stroke-linejoin="round">
-        <path d="M3 7l1 12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2l1-12H3z"></path>
+        <path d="M3 7l1 12a2 2 0 002 2h12a2 2 0 002-2l1-12H3z"/>
       </svg>
       <span>${store}</span>
     `;
@@ -105,7 +95,10 @@ function renderStoreButtons() {
     if (!val) return;
     stores.push(val);
     newStoreInput.value = "";
+    // Re-render store buttons
     renderStoreButtons();
+    // Also re-render form so new store is in the dropdown
+    renderAddStrainForm();
   };
 }
 
@@ -181,6 +174,7 @@ function renderAddStrainForm() {
   // handle form submit
   const strainForm = formDiv.querySelector("#strainForm");
   const photoInput = formDiv.querySelector("#strainPhoto");
+
   strainForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -201,12 +195,10 @@ function renderAddStrainForm() {
     if (file) {
       const reader = new FileReader();
       reader.onload = function(ev) {
-        newStrain.photo = ev.target?.result;
+        newStrain.photo = ev.target?.result; // base64
         addAndRefresh(newStrain);
       };
-      reader.readAsText(file); // <-- Actually for images, we want readAsDataURL
-      // Correction:
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file); // crucial for images
     } else {
       addAndRefresh(newStrain);
     }
@@ -217,6 +209,7 @@ function renderAddStrainForm() {
       ["taste","consistency","smell","effect"].forEach((attr) => {
         formDiv.querySelector(`#${attr}Value`).textContent = "5";
       });
+      // re-render store view
       renderStoreView();
     }
   });
@@ -229,7 +222,7 @@ function renderStoreView() {
   const container = document.getElementById("storeViewContainer");
   container.innerHTML = "";
 
-  // buttons row
+  // Buttons row for "all" or "by-store"
   const btnRow = document.createElement("div");
   btnRow.className = "view-mode-btns";
   btnRow.innerHTML = `
@@ -240,17 +233,11 @@ function renderStoreView() {
 
   const allBtn = btnRow.querySelector("#allViewBtn");
   const byStoreBtn = btnRow.querySelector("#byStoreBtn");
-  allBtn.addEventListener("click", () => {
-    viewMode = "all";
-    renderStoreView();
-  });
-  byStoreBtn.addEventListener("click", () => {
-    viewMode = "by-store";
-    renderStoreView();
-  });
+  allBtn.onclick = () => { viewMode = "all"; renderStoreView(); };
+  byStoreBtn.onclick = () => { viewMode = "by-store"; renderStoreView(); };
 
   if (viewMode === "all") {
-    // show all strains in grid
+    // show all in grid
     const grid = document.createElement("div");
     grid.className = "strains-grid";
     allStrains.forEach((s) => {
@@ -267,12 +254,11 @@ function renderStoreView() {
       const header = document.createElement("div");
       header.className = "store-group-header";
       header.innerHTML = `
-        <div class="flex-row-center">
-          <!-- store icon -->
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"
-               style="margin-right: 4px;">
-            <path d="M3 7l1 12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2l1-12H3z" />
+        <div style="display:flex; align-items:center; gap:4px;">
+          <svg width="18" height="18" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+               viewBox="0 0 24 24">
+            <path d="M3 7l1 12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2l1-12H3z"></path>
           </svg>
           <span>${store}</span>
           <span style="font-size:0.8rem; color:#666; margin-left:4px;">
@@ -291,12 +277,12 @@ function renderStoreView() {
 
       const content = document.createElement("div");
       content.className = "store-group-content";
-      const contentGrid = document.createElement("div");
-      contentGrid.className = "strains-grid";
+      const cGrid = document.createElement("div");
+      cGrid.className = "strains-grid";
       groups[store].forEach((strain) => {
-        contentGrid.appendChild(createStrainCard(strain));
+        cGrid.appendChild(createStrainCard(strain));
       });
-      content.appendChild(contentGrid);
+      content.appendChild(cGrid);
       cardDiv.appendChild(content);
 
       let expanded = false;
@@ -304,10 +290,10 @@ function renderStoreView() {
         expanded = !expanded;
         if (expanded) {
           content.style.maxHeight = content.scrollHeight + "px";
-          header.querySelector(".chevron-icon svg").style.transform = "rotate(180deg)";
+          header.querySelector("svg").style.transform = "rotate(180deg)";
         } else {
           content.style.maxHeight = "0";
-          header.querySelector(".chevron-icon svg").style.transform = "rotate(0deg)";
+          header.querySelector("svg").style.transform = "rotate(0deg)";
         }
       });
 
@@ -316,7 +302,7 @@ function renderStoreView() {
   }
 }
 
-// group by store
+// group strains by store
 function groupStrainsByStore() {
   const map = {};
   allStrains.forEach((s) => {
@@ -334,8 +320,7 @@ function createStrainCard(strain) {
   const values = [strain.taste, strain.consistency, strain.smell, strain.effect];
   const avg = parseFloat((values.reduce((a,b)=>a+b, 0) / values.length).toFixed(1));
 
-  // pick color for the circle
-  // from high rating (greens) to low (reds)
+  // color for circle
   function getRatingClass(r) {
     if (r >= 8.5) return "bg-gradient-high";
     if (r >= 7)   return "bg-gradient-good";
@@ -354,12 +339,14 @@ function createStrainCard(strain) {
   badge.textContent = avg;
   card.appendChild(badge);
 
-  // photo
+  // photo or placeholder
   if (strain.photo) {
     const img = document.createElement("img");
     img.src = strain.photo;
     img.alt = strain.name;
     img.className = "strain-photo";
+    // On click, show modal full image
+    img.addEventListener("click", () => openImageModal(strain.photo));
     card.appendChild(img);
   } else {
     const placeholder = document.createElement("div");
@@ -372,19 +359,20 @@ function createStrainCard(strain) {
   const contentDiv = document.createElement("div");
   contentDiv.className = "strain-card-content";
 
-  // header
+  // header (name + type)
   const headerDiv = document.createElement("div");
   headerDiv.className = "strain-card-header";
+
   const nameSpan = document.createElement("span");
   nameSpan.className = "strain-name";
   nameSpan.textContent = strain.name;
+
   const typeSpan = document.createElement("span");
   typeSpan.className = "strain-type";
   typeSpan.textContent = strain.type;
 
   headerDiv.appendChild(nameSpan);
   headerDiv.appendChild(typeSpan);
-
   contentDiv.appendChild(headerDiv);
 
   // store
@@ -392,36 +380,41 @@ function createStrainCard(strain) {
     const storeDiv = document.createElement("div");
     storeDiv.className = "strain-store";
     storeDiv.innerHTML = `
-      <!-- store icon -->
       <svg width="14" height="14" fill="none" stroke="currentColor"
            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
            viewBox="0 0 24 24">
-        <path d="M3 7l1 12a2 2 0 002 2h12a2 2 0 002-2l1-12H3z"></path>
+        <path d="M3 7l1 12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2l1-12H3z"></path>
       </svg>
       <span>${strain.store}</span>
     `;
     contentDiv.appendChild(storeDiv);
   }
 
-  // ratings
-  const ratingLines = document.createElement("div");
-  values.forEach((val, i) => {
-    const label = ["Taste","Consistency","Smell","Effect"][i];
+  // rating lines
+  const ratingLinesDiv = document.createElement("div");
+  [
+    { label: "Taste", value: strain.taste },
+    { label: "Consistency", value: strain.consistency },
+    { label: "Smell", value: strain.smell },
+    { label: "Effect", value: strain.effect },
+  ].forEach((r) => {
     const line = document.createElement("div");
     line.className = "rating-line";
     line.innerHTML = `
-      <span class="rating-label">${label}</span>
+      <span class="rating-label">${r.label}</span>
       <div class="rating-bar-wrapper">
         <div class="rating-bar-track">
-          <div class="rating-bar-fill ${getRatingClass(val)}"
-               style="width:${(val/10)*100}%;"></div>
+          <div
+            class="rating-bar-fill ${getRatingClass(r.value)}"
+            style="width:${(r.value/10)*100}%"
+          ></div>
         </div>
-        <span style="font-size:0.8rem; color:#444; width:20px; text-align:right;">${val}</span>
+        <span style="font-size:0.8rem; color:#444; width:20px; text-align:right;">${r.value}</span>
       </div>
     `;
-    ratingLines.appendChild(line);
+    ratingLinesDiv.appendChild(line);
   });
-  contentDiv.appendChild(ratingLines);
+  contentDiv.appendChild(ratingLinesDiv);
 
   // actions
   const actionsDiv = document.createElement("div");
@@ -431,7 +424,6 @@ function createStrainCard(strain) {
   const shareBtn = document.createElement("button");
   shareBtn.className = "action-btn";
   shareBtn.innerHTML = `
-    <!-- share icon -->
     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
          stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
       <circle cx="18" cy="5" r="3"></circle>
@@ -448,21 +440,19 @@ function createStrainCard(strain) {
   const editBtn = document.createElement("button");
   editBtn.className = "action-btn";
   editBtn.innerHTML = `
-    <!-- edit icon -->
     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
          stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
       <path d="M12 20h9"></path>
       <path d="M16.5 3.5l4 4L7 21H3v-4L16.5 3.5z"></path>
     </svg>
   `;
-  editBtn.onclick = () => alert(`Edit strain: ${strain.name}`);
+  editBtn.onclick = () => alert(`Edit: ${strain.name}`);
   actionsDiv.appendChild(editBtn);
 
   // delete
   const deleteBtn = document.createElement("button");
   deleteBtn.className = "action-btn action-btn-danger";
   deleteBtn.innerHTML = `
-    <!-- trash icon -->
     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
          stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
       <polyline points="3 6 5 6 21 6"></polyline>
@@ -548,4 +538,33 @@ function initDataActions() {
     };
     reader.readAsText(file);
   });
+}
+
+/******************************************/
+/**           IMAGE MODAL LOGIC          **/
+/******************************************/
+let modal, modalImg, modalClose;
+function initImageModal() {
+  modal = document.getElementById("imgModal");
+  modalImg = document.getElementById("modalImg");
+  modalClose = document.getElementById("modalClose");
+
+  modalClose.addEventListener("click", () => {
+    closeImageModal();
+  });
+
+  // close if user clicks outside the image
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      closeImageModal();
+    }
+  });
+}
+function openImageModal(imgSrc) {
+  modalImg.src = imgSrc;
+  modal.style.display = "block";
+}
+function closeImageModal() {
+  modal.style.display = "none";
+  modalImg.src = "";
 }
