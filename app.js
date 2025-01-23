@@ -127,7 +127,9 @@ function renderAddStrainForm() {
         <select id="strainType" required>
           <option value="" disabled selected hidden>Select type</option>
           <option value="indica">Indica</option>
+          <option value="indica">Indica dominant</option>
           <option value="sativa">Sativa</option>
+          <option value="sativa">Sativa dominant</option>
           <option value="hybrid">Hybrid</option>
         </select>
       </div>
