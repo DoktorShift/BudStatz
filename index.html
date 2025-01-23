@@ -2,23 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>BudStats</title>
 
   <!-- Our custom CSS -->
   <link rel="stylesheet" href="styles.css" />
-
-  <!-- For icons (e.g. burger, close, etc.): We’ll embed inline SVG or references in the JS. -->
 </head>
 <body>
-  <!-- MAIN CONTAINER -->
   <div class="container" id="appContainer">
 
     <!-- ===== NAV BAR ===== -->
     <div class="nav-bar">
       <h1 class="app-title">BudStats</h1>
       <button class="burger-btn" id="sheetTrigger" title="Open Settings">
-        <!-- Simple 'burger' icon as inline SVG -->
+        <!-- "burger" icon inline SVG -->
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
              xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
           <path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round" stroke-linejoin="round"/>
@@ -26,26 +23,20 @@
       </button>
     </div>
 
-    <!-- ===== SIDE SHEET (hidden by default) ===== -->
+    <!-- ===== SIDE SHEET ===== -->
     <div class="side-sheet" id="sideSheet">
       <div class="sheet-header">
         <h2>Settings</h2>
-        <button class="close-btn" id="closeSheetBtn" title="Close">
-          &times;
-        </button>
+        <button class="close-btn" id="closeSheetBtn" title="Close">&times;</button>
       </div>
 
       <!-- Store Selector -->
       <div class="sheet-section">
         <h3>Stores</h3>
         <div class="add-store">
-          <input
-            type="text"
-            id="newStoreInput"
-            placeholder="Add new store..."
-          />
+          <input type="text" id="newStoreInput" placeholder="Add new store..." />
           <button id="addStoreButton" class="store-add-btn">
-            <!-- Plus icon -->
+            <!-- plus icon -->
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2"
                  stroke-linecap="round" stroke-linejoin="round">
@@ -56,7 +47,7 @@
         <div id="storeButtons" class="store-buttons"></div>
       </div>
 
-      <!-- Data Management (Import/Export) -->
+      <!-- Data Actions (Import/Export) -->
       <div class="sheet-section">
         <h3>Data Management</h3>
         <div class="data-actions">
@@ -74,7 +65,12 @@
       <!-- RIGHT: StoreView container -->
       <div id="storeViewContainer" class="right-panel"></div>
     </div>
+  </div>
 
+  <!-- MODAL for full image preview -->
+  <div id="imgModal" class="modal">
+    <span id="modalClose" class="modal-close">&times;</span>
+    <img id="modalImg" class="modal-content-img" alt="Full Preview" />
   </div>
 
   <!-- Main logic -->
