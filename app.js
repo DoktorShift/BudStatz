@@ -1,5 +1,5 @@
 /******************************************/
-/**         DEMO DATA + GLOBALS          **/
+/**       GLOBAL DEMO DATA + STATE       **/
 /******************************************/
 let stores = ["Green Store", "Herbal Haven"];
 let allStrains = [
@@ -27,67 +27,77 @@ let allStrains = [
   },
 ];
 
-// "viewMode" can be 'all' or 'by-store'
+// "viewMode" can be "all" or "by-store"
 let viewMode = "by-store";
 
 /******************************************/
-/**          ON LOAD INIT                **/
+/**             ON LOAD INIT             **/
 /******************************************/
 document.addEventListener("DOMContentLoaded", () => {
   initSideSheet();
   renderStoreButtons();
-
   renderAddStrainForm();
   renderStoreView();
-
   initDataActions();
 });
 
 /******************************************/
-/**            SIDE SHEET LOGIC          **/
+/**           SIDE SHEET LOGIC           **/
 /******************************************/
 function initSideSheet() {
   const sheetTrigger = document.getElementById("sheetTrigger");
   const sideSheet = document.getElementById("sideSheet");
-  const closeBtn = document.getElementById("closeSheetBtn");
+  const closeSheetBtn = document.getElementById("closeSheetBtn");
 
   sheetTrigger.addEventListener("click", () => {
     sideSheet.classList.add("show");
   });
-  closeBtn.addEventListener("click", () => {
+  closeSheetBtn.addEventListener("click", () => {
     sideSheet.classList.remove("show");
   });
 
-  // close if user clicks outside the sheet
-  document.addEventListener("click", (event) => {
-    if (!sideSheet.contains(event.target) && !sheetTrigger.contains(event.target)) {
+  // close if user clicks outside
+  document.addEventListener("click", (e) => {
+    if (!sideSheet.contains(e.target) && !sheetTrigger.contains(e.target)) {
       sideSheet.classList.remove("show");
     }
   });
 }
 
 /******************************************/
-/**         STORE SELECTOR LOGIC         **/
+/**        STORE SELECTOR (SHEET)        **/
 /******************************************/
 function renderStoreButtons() {
   const container = document.getElementById("storeButtons");
   container.innerHTML = "";
+
   stores.forEach((store) => {
     const btn = document.createElement("button");
-    btn.className =
-      "border border-emerald-200 rounded px-2 py-1 flex items-center gap-2 text-sm hover:bg-emerald-50 dark:hover:bg-emerald-800";
+    btn.className = "store-item-btn";
+    btn.style.cssText = `
+      border: 1px solid #ccc;
+      background-color: #f0fff4;
+      border-radius: 4px;
+      padding: 0.4rem 0.6rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+    `;
     btn.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-           viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M3 7l1 12a2 2 0 002 2h12a2 2 0 002-2l1-12H3z" />
+      <!-- store icon -->
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round">
+        <path d="M3 7l1 12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2l1-12H3z"></path>
       </svg>
-      ${store}
+      <span>${store}</span>
     `;
     container.appendChild(btn);
   });
 
-  // add store button
+  // Add store
   const addStoreBtn = document.getElementById("addStoreButton");
   const newStoreInput = document.getElementById("newStoreInput");
   addStoreBtn.onclick = () => {
@@ -100,266 +110,213 @@ function renderStoreButtons() {
 }
 
 /******************************************/
-/**         ADD STRAIN FORM              **/
+/**         ADD STRAIN FORM LOGIC        **/
 /******************************************/
 function renderAddStrainForm() {
   const container = document.getElementById("addStrainFormContainer");
   container.innerHTML = "";
 
-  const formCard = document.createElement("div");
-  formCard.className = "backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 p-4 rounded";
+  const formDiv = document.createElement("div");
+  formDiv.className = "form-card";
 
-  formCard.innerHTML = `
-    <h2 class="text-2xl font-bold text-emerald-700 dark:text-emerald-300 mb-4">
-      Add New Strain
-    </h2>
-    <form id="strainForm" class="space-y-6">
-      <!-- name -->
-      <div class="space-y-2">
-        <label for="strainName" class="font-medium">Strain Name</label>
-        <input
-          type="text"
-          id="strainName"
-          class="w-full border border-emerald-200 focus:border-emerald-500 rounded p-2"
-          required
-        />
+  formDiv.innerHTML = `
+    <h2>Add New Strain</h2>
+    <form id="strainForm">
+      <!-- Strain Name -->
+      <div class="add-form-group">
+        <label>Strain Name</label>
+        <input type="text" id="strainName" required />
       </div>
-      <!-- type -->
-      <div class="space-y-2">
-        <label for="strainType" class="font-medium">Strain Type</label>
-        <select
-          id="strainType"
-          class="w-full border border-emerald-200 focus:border-emerald-500 rounded p-2"
-          required
-        >
+
+      <!-- Strain Type -->
+      <div class="add-form-group">
+        <label>Strain Type</label>
+        <select id="strainType" required>
           <option value="" disabled selected hidden>Select type</option>
           <option value="indica">Indica</option>
           <option value="sativa">Sativa</option>
           <option value="hybrid">Hybrid</option>
         </select>
       </div>
-      <!-- store -->
-      <div class="space-y-2">
-        <label for="strainStore" class="font-medium">Store</label>
-        <select
-          id="strainStore"
-          class="w-full border border-emerald-200 focus:border-emerald-500 rounded p-2"
-          required
-        >
+
+      <!-- Store -->
+      <div class="add-form-group">
+        <label>Store</label>
+        <select id="strainStore" required>
           <option value="" disabled selected hidden>Select store</option>
-          ${
-            stores
-              .map((s) => `<option value="${s}">${s}</option>`)
-              .join("")
-          }
+          ${stores.map((s) => `<option value="${s}">${s}</option>`).join("")}
         </select>
       </div>
+
       <!-- taste, consistency, smell, effect -->
       ${["taste","consistency","smell","effect"].map(attr => `
-      <div class="space-y-2">
-        <label class="capitalize">${attr} (0-10)</label>
-        <input
-          type="range"
-          min="0"
-          max="10"
-          step="0.5"
-          id="${attr}"
-          class="w-full"
-          value="5"
-        />
-        <div class="text-right text-sm text-gray-500" id="${attr}Value">5</div>
+      <div class="add-form-group">
+        <label>${attr.charAt(0).toUpperCase() + attr.slice(1)} (0-10)</label>
+        <input type="range" min="0" max="10" step="0.5" id="${attr}" value="5" />
+        <div class="range-value" id="${attr}Value">5</div>
+      </div>`).join("")}
+
+      <!-- Photo -->
+      <div class="add-form-group">
+        <label>Strain Photo (optional)</label>
+        <input type="file" id="strainPhoto" accept="image/*" />
       </div>
-      `).join("")}
-      <!-- photo -->
-      <div class="space-y-2">
-        <label class="font-medium">Strain Photo (optional)</label>
-        <input
-          type="file"
-          id="strainPhoto"
-          accept="image/*"
-          class="border border-emerald-200 focus:border-emerald-500 rounded p-2"
-        />
-      </div>
-      <!-- submit -->
-      <button
-        type="submit"
-        class="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white rounded py-2 font-semibold"
-      >
-        Add Strain
-      </button>
+
+      <!-- Submit -->
+      <button type="submit" class="add-form-submit">Add Strain</button>
     </form>
   `;
 
-  container.appendChild(formCard);
+  container.appendChild(formDiv);
 
-  // handle dynamic slider values
+  // dynamic range value updates
   ["taste","consistency","smell","effect"].forEach((attr) => {
-    const range = formCard.querySelector(`#${attr}`);
-    const valSpan = formCard.querySelector(`#${attr}Value`);
+    const range = formDiv.querySelector(`#${attr}`);
+    const valSpan = formDiv.querySelector(`#${attr}Value`);
     range.addEventListener("input", () => {
       valSpan.textContent = range.value;
     });
   });
 
   // handle form submit
-  const strainForm = formCard.querySelector("#strainForm");
-  const strainPhotoInput = formCard.querySelector("#strainPhoto");
-
+  const strainForm = formDiv.querySelector("#strainForm");
+  const photoInput = formDiv.querySelector("#strainPhoto");
   strainForm.addEventListener("submit", (e) => {
     e.preventDefault();
+
     const newStrain = {
       id: Date.now().toString(),
       name: strainForm.querySelector("#strainName").value.trim(),
       type: strainForm.querySelector("#strainType").value,
+      store: strainForm.querySelector("#strainStore").value,
       taste: parseFloat(strainForm.querySelector("#taste").value),
       consistency: parseFloat(strainForm.querySelector("#consistency").value),
       smell: parseFloat(strainForm.querySelector("#smell").value),
       effect: parseFloat(strainForm.querySelector("#effect").value),
-      store: strainForm.querySelector("#strainStore").value,
       photo: null,
     };
 
-    // read the file if any
-    const file = strainPhotoInput.files?.[0];
+    // if there's a photo
+    const file = photoInput.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (ev) => {
+      reader.onload = function(ev) {
         newStrain.photo = ev.target?.result;
-        addNewStrain(newStrain);
+        addAndRefresh(newStrain);
       };
+      reader.readAsText(file); // <-- Actually for images, we want readAsDataURL
+      // Correction:
       reader.readAsDataURL(file);
     } else {
-      addNewStrain(newStrain);
+      addAndRefresh(newStrain);
     }
 
-    function addNewStrain(strainObj) {
-      allStrains.push(strainObj);
-      // reset
+    function addAndRefresh(str) {
+      allStrains.push(str);
       strainForm.reset();
       ["taste","consistency","smell","effect"].forEach((attr) => {
-        formCard.querySelector(`#${attr}Value`).textContent = "5";
+        formDiv.querySelector(`#${attr}Value`).textContent = "5";
       });
-      // re-render
       renderStoreView();
     }
   });
 }
 
 /******************************************/
-/**          STORE VIEW LOGIC            **/
+/**            STORE VIEW LOGIC          **/
 /******************************************/
 function renderStoreView() {
   const container = document.getElementById("storeViewContainer");
   container.innerHTML = "";
 
-  // Buttons for "all" or "by-store"
+  // buttons row
   const btnRow = document.createElement("div");
-  btnRow.className = "flex justify-end gap-2";
+  btnRow.className = "view-mode-btns";
   btnRow.innerHTML = `
-    <button
-      class="px-3 py-1 rounded ${viewMode === "all" ? "bg-emerald-500 text-white" : "border border-emerald-300"}"
-      id="allViewBtn"
-    >
-      All Strains
-    </button>
-    <button
-      class="px-3 py-1 rounded ${viewMode === "by-store" ? "bg-emerald-500 text-white" : "border border-emerald-300"}"
-      id="byStoreViewBtn"
-    >
-      By Store
-    </button>
+    <button class="view-mode-btn ${viewMode === "all" ? "active" : ""}" id="allViewBtn">All Strains</button>
+    <button class="view-mode-btn ${viewMode === "by-store" ? "active" : ""}" id="byStoreBtn">By Store</button>
   `;
   container.appendChild(btnRow);
 
-  const allViewBtn = btnRow.querySelector("#allViewBtn");
-  const byStoreViewBtn = btnRow.querySelector("#byStoreViewBtn");
-  allViewBtn.addEventListener("click", () => {
+  const allBtn = btnRow.querySelector("#allViewBtn");
+  const byStoreBtn = btnRow.querySelector("#byStoreBtn");
+  allBtn.addEventListener("click", () => {
     viewMode = "all";
     renderStoreView();
   });
-  byStoreViewBtn.addEventListener("click", () => {
+  byStoreBtn.addEventListener("click", () => {
     viewMode = "by-store";
     renderStoreView();
   });
 
   if (viewMode === "all") {
-    // show all in a grid
+    // show all strains in grid
     const grid = document.createElement("div");
-    grid.className = "grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-4";
+    grid.className = "strains-grid";
     allStrains.forEach((s) => {
       grid.appendChild(createStrainCard(s));
     });
     container.appendChild(grid);
   } else {
     // group by store
-    const grouped = groupStrainsByStore();
-    Object.keys(grouped).forEach((store) => {
-      const card = document.createElement("div");
-      card.className = "bg-white/90 dark:bg-gray-900/90 rounded shadow overflow-hidden mb-4";
+    const groups = groupStrainsByStore();
+    Object.keys(groups).forEach((store) => {
+      const cardDiv = document.createElement("div");
+      cardDiv.className = "store-group-card";
 
-      // header
       const header = document.createElement("div");
-      header.className =
-        "cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/20 px-4 py-2 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center";
+      header.className = "store-group-header";
       header.innerHTML = `
-        <div class="flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-               viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M3 7l1 12a2 2 0 002 2h12a2 2 0 002-2l1-12H3z" />
+        <div class="flex-row-center">
+          <!-- store icon -->
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"
+               style="margin-right: 4px;">
+            <path d="M3 7l1 12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2l1-12H3z" />
           </svg>
           <span>${store}</span>
-          <span class="text-sm text-gray-500">(${grouped[store].length})</span>
+          <span style="font-size:0.8rem; color:#666; margin-left:4px;">
+            (${groups[store].length})
+          </span>
         </div>
-        <span class="chevronIcon">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-               viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M19 9l-7 7-7-7" />
+        <div class="chevron-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round"
+               stroke-linejoin="round">
+            <path d="M19 9l-7 7-7-7"></path>
           </svg>
-        </span>
+        </div>
       `;
-      card.appendChild(header);
+      cardDiv.appendChild(header);
 
       const content = document.createElement("div");
-      content.className = "px-4 py-2 max-h-0 overflow-hidden transition-all duration-200 ease-in-out";
-      const grid = document.createElement("div");
-      grid.className = "grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-2";
-      grouped[store].forEach((s) => {
-        grid.appendChild(createStrainCard(s));
+      content.className = "store-group-content";
+      const contentGrid = document.createElement("div");
+      contentGrid.className = "strains-grid";
+      groups[store].forEach((strain) => {
+        contentGrid.appendChild(createStrainCard(strain));
       });
-      content.appendChild(grid);
-      card.appendChild(content);
+      content.appendChild(contentGrid);
+      cardDiv.appendChild(content);
 
       let expanded = false;
       header.addEventListener("click", () => {
         expanded = !expanded;
         if (expanded) {
           content.style.maxHeight = content.scrollHeight + "px";
-          header.querySelector(".chevronIcon").innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                 viewBox="0 0 24 24" stroke="currentColor" style="transform: rotate(180deg)">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M19 9l-7 7-7-7" />
-            </svg>
-          `;
+          header.querySelector(".chevron-icon svg").style.transform = "rotate(180deg)";
         } else {
-          content.style.maxHeight = "0px";
-          header.querySelector(".chevronIcon").innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                 viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M19 9l-7 7-7-7" />
-            </svg>
-          `;
+          content.style.maxHeight = "0";
+          header.querySelector(".chevron-icon svg").style.transform = "rotate(0deg)";
         }
       });
 
-      container.appendChild(card);
+      container.appendChild(cardDiv);
     });
   }
 }
 
+// group by store
 function groupStrainsByStore() {
   const map = {};
   allStrains.forEach((s) => {
@@ -370,152 +327,148 @@ function groupStrainsByStore() {
 }
 
 /******************************************/
-/**        STRAIN CARD (acc rating)      **/
+/**          CREATE STRAIN CARD          **/
 /******************************************/
 function createStrainCard(strain) {
-  // accumulate rating
-  const ratings = [strain.taste, strain.consistency, strain.smell, strain.effect];
-  const accumulatedRating = parseFloat( (ratings.reduce((a,b)=>a+b,0) / ratings.length).toFixed(1) );
+  // get average rating
+  const values = [strain.taste, strain.consistency, strain.smell, strain.effect];
+  const avg = parseFloat((values.reduce((a,b)=>a+b, 0) / values.length).toFixed(1));
 
-  // pick color gradient for the circle based on rating
-  function getRatingColor(r) {
-    if (r >= 8.5) return "from-emerald-500 to-green-500";
-    if (r >= 7)   return "from-green-500 to-yellow-500";
-    if (r >= 5)   return "from-yellow-500 to-orange-500";
-    if (r >= 3)   return "from-orange-500 to-red-500";
-    return         "from-red-500 to-rose-600";
+  // pick color for the circle
+  // from high rating (greens) to low (reds)
+  function getRatingClass(r) {
+    if (r >= 8.5) return "bg-gradient-high";
+    if (r >= 7)   return "bg-gradient-good";
+    if (r >= 5)   return "bg-gradient-mid";
+    if (r >= 3)   return "bg-gradient-low";
+    return         "bg-gradient-bad";
   }
-  const ratingColorClass = getRatingColor(accumulatedRating);
+  const ratingClass = getRatingClass(avg);
 
   const card = document.createElement("div");
-  card.className = "relative group overflow-hidden hover:shadow-lg transition-all duration-300 backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 rounded";
+  card.className = "strain-card";
 
-  // rating badge (absolutely positioned)
+  // rating badge
   const badge = document.createElement("div");
-  badge.className = `absolute -top-3 -right-3 z-10 w-16 h-16 rounded-full bg-gradient-to-br ${ratingColorClass} shadow-lg flex items-center justify-center transform transition-transform duration-300 group-hover:scale-110`;
-  badge.innerHTML = `<span class="text-xl font-bold text-white">${accumulatedRating}</span>`;
+  badge.className = `strain-badge ${ratingClass}`;
+  badge.textContent = avg;
   card.appendChild(badge);
 
   // photo
   if (strain.photo) {
-    const photoWrapper = document.createElement("div");
-    photoWrapper.className = "relative h-48 w-full overflow-hidden cursor-pointer";
-    const imgElem = document.createElement("img");
-    imgElem.src = strain.photo;
-    imgElem.alt = strain.name;
-    imgElem.className = "object-cover w-full h-full transition-transform duration-300 group-hover:scale-105";
-    photoWrapper.appendChild(imgElem);
-
-    const overlay = document.createElement("div");
-    overlay.className = "absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300";
-    photoWrapper.appendChild(overlay);
-
-    card.appendChild(photoWrapper);
+    const img = document.createElement("img");
+    img.src = strain.photo;
+    img.alt = strain.name;
+    img.className = "strain-photo";
+    card.appendChild(img);
   } else {
     const placeholder = document.createElement("div");
-    placeholder.className = "h-48 bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center text-emerald-600";
+    placeholder.className = "strain-placeholder";
     placeholder.textContent = "No image available";
     card.appendChild(placeholder);
   }
 
   // content
   const contentDiv = document.createElement("div");
-  contentDiv.className = "p-4";
+  contentDiv.className = "strain-card-content";
 
   // header
   const headerDiv = document.createElement("div");
-  headerDiv.className = "mb-2 flex justify-between items-center";
-  headerDiv.innerHTML = `
-    <span class="text-xl font-bold text-emerald-700 dark:text-emerald-300">${strain.name}</span>
-    <span class="text-sm px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
-      ${strain.type}
-    </span>
-  `;
+  headerDiv.className = "strain-card-header";
+  const nameSpan = document.createElement("span");
+  nameSpan.className = "strain-name";
+  nameSpan.textContent = strain.name;
+  const typeSpan = document.createElement("span");
+  typeSpan.className = "strain-type";
+  typeSpan.textContent = strain.type;
+
+  headerDiv.appendChild(nameSpan);
+  headerDiv.appendChild(typeSpan);
+
   contentDiv.appendChild(headerDiv);
 
-  // store, if any
+  // store
   if (strain.store) {
-    const storeLine = document.createElement("div");
-    storeLine.className = "flex items-center gap-2 text-sm text-gray-500 mb-3";
-    storeLine.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-           viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M3 7l1 12a2 2 0 002 2h12a2 2 0 002-2l1-12H3z" />
+    const storeDiv = document.createElement("div");
+    storeDiv.className = "strain-store";
+    storeDiv.innerHTML = `
+      <!-- store icon -->
+      <svg width="14" height="14" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+           viewBox="0 0 24 24">
+        <path d="M3 7l1 12a2 2 0 002 2h12a2 2 0 002-2l1-12H3z"></path>
       </svg>
-      ${strain.store}
+      <span>${strain.store}</span>
     `;
-    contentDiv.appendChild(storeLine);
+    contentDiv.appendChild(storeDiv);
   }
 
-  // rating bars
-  const ratingWrapper = document.createElement("div");
-  ratingWrapper.className = "space-y-2";
-  [
-    { label: "Taste", value: strain.taste },
-    { label: "Consistency", value: strain.consistency },
-    { label: "Smell", value: strain.smell },
-    { label: "Effect", value: strain.effect },
-  ].forEach((r) => {
-    const row = document.createElement("div");
-    row.className = "flex items-center justify-between group-hover:opacity-100 transition-opacity";
-    row.innerHTML = `
-      <span class="text-sm text-gray-600 dark:text-gray-400">${r.label}</span>
-      <div class="flex items-center gap-2">
-        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div class="h-full bg-gradient-to-r ${getRatingColor(r.value)}"
-               style="width: ${(r.value / 10) * 100}%; transition: width 0.5s;">
-          </div>
+  // ratings
+  const ratingLines = document.createElement("div");
+  values.forEach((val, i) => {
+    const label = ["Taste","Consistency","Smell","Effect"][i];
+    const line = document.createElement("div");
+    line.className = "rating-line";
+    line.innerHTML = `
+      <span class="rating-label">${label}</span>
+      <div class="rating-bar-wrapper">
+        <div class="rating-bar-track">
+          <div class="rating-bar-fill ${getRatingClass(val)}"
+               style="width:${(val/10)*100}%;"></div>
         </div>
-        <span class="text-sm font-medium w-8 text-gray-500 group-hover:opacity-100 transition-opacity">
-          ${r.value}
-        </span>
+        <span style="font-size:0.8rem; color:#444; width:20px; text-align:right;">${val}</span>
       </div>
     `;
-    ratingWrapper.appendChild(row);
+    ratingLines.appendChild(line);
   });
-  contentDiv.appendChild(ratingWrapper);
+  contentDiv.appendChild(ratingLines);
 
-  // action buttons row
+  // actions
   const actionsDiv = document.createElement("div");
-  actionsDiv.className = "flex justify-end gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300";
+  actionsDiv.className = "strain-actions";
 
   // share
   const shareBtn = document.createElement("button");
-  shareBtn.className = "border border-gray-300 rounded p-2 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800";
+  shareBtn.className = "action-btn";
   shareBtn.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-         fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M4 12v.01M12 6v.01M20 12v.01M12 18v.01
-                 M14.5 10.5L12 8l-2.5 2.5
-                 M14.5 13.5L12 16l-2.5-2.5" />
+    <!-- share icon -->
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+      <circle cx="18" cy="5" r="3"></circle>
+      <circle cx="6" cy="12" r="3"></circle>
+      <circle cx="18" cy="19" r="3"></circle>
+      <path d="M8.59 13.51l6.83 3.98"></path>
+      <path d="M15.41 6.51l-6.82 3.98"></path>
     </svg>
   `;
-  shareBtn.onclick = () => alert(`Share: ${strain.name} — not yet implemented.`);
+  shareBtn.onclick = () => alert("Share not implemented.");
   actionsDiv.appendChild(shareBtn);
 
   // edit
   const editBtn = document.createElement("button");
-  editBtn.className = "border border-gray-300 rounded p-2 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800";
+  editBtn.className = "action-btn";
   editBtn.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-         fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M11 5h2M14.5 6.5l-4 4M4 20h16" />
+    <!-- edit icon -->
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+      <path d="M12 20h9"></path>
+      <path d="M16.5 3.5l4 4L7 21H3v-4L16.5 3.5z"></path>
     </svg>
   `;
-  editBtn.onclick = () => alert(`Edit: ${strain.name} — stub action.`);
+  editBtn.onclick = () => alert(`Edit strain: ${strain.name}`);
   actionsDiv.appendChild(editBtn);
 
   // delete
   const deleteBtn = document.createElement("button");
-  deleteBtn.className = "border border-gray-300 rounded p-2 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-800";
+  deleteBtn.className = "action-btn action-btn-danger";
   deleteBtn.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round"
-            d="M9 13h6m2 9H7a2 2 0 01-2-2V7h14v13a2 2 0 01-2 2zM10 7l-1-3h6l-1 3" />
+    <!-- trash icon -->
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+      <polyline points="3 6 5 6 21 6"></polyline>
+      <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"></path>
+      <line x1="10" y1="11" x2="10" y2="17"></line>
+      <line x1="14" y1="11" x2="14" y2="17"></line>
     </svg>
   `;
   deleteBtn.onclick = () => {
@@ -527,69 +480,70 @@ function createStrainCard(strain) {
   actionsDiv.appendChild(deleteBtn);
 
   contentDiv.appendChild(actionsDiv);
-
   card.appendChild(contentDiv);
+
   return card;
 }
 
 /******************************************/
-/**        IMPORT / EXPORT (STUB)        **/
+/**          DATA ACTIONS (I/E)          **/
 /******************************************/
 function initDataActions() {
   const exportBtn = document.getElementById("exportButton");
   const importBtn = document.getElementById("importButton");
   const importFile = document.getElementById("importFile");
 
-  exportBtn.onclick = () => {
-    // create JSON for stores + strains
+  exportBtn.addEventListener("click", () => {
     const dataStr = JSON.stringify({ stores, strains: allStrains }, null, 2);
     const blob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
+
     const link = document.createElement("a");
     link.href = url;
     link.download = "budstats-data.json";
     link.click();
     URL.revokeObjectURL(url);
-  };
+  });
 
-  importBtn.onclick = () => {
+  importBtn.addEventListener("click", () => {
     importFile.click();
-  };
+  });
 
-  importFile.addEventListener("change", (evt) => {
-    const file = evt.target.files[0];
+  importFile.addEventListener("change", (e) => {
+    const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = (ev) => {
       try {
-        const parsed = JSON.parse(e.target.result);
-        if (!Array.isArray(parsed.stores) || !Array.isArray(parsed.strains)) {
-          alert("Invalid data format. Must have {stores, strains} arrays.");
+        const parsed = JSON.parse(ev.target.result);
+        if (!parsed.stores || !parsed.strains) {
+          alert("Invalid JSON. Must be {stores:[], strains:[]}");
           return;
         }
-        if (confirm("Merge new data? (Cancel to overwrite)")) {
-          // merge
+        // Merge or Overwrite?
+        if (confirm("Merge data? (Cancel to overwrite)")) {
+          // Merge
           stores = Array.from(new Set([...stores, ...parsed.stores]));
           allStrains = [...allStrains, ...parsed.strains];
-          // deduplicate by ID:
+          // remove duplicates by ID
           const seen = new Set();
-          allStrains = allStrains.filter((s) => {
-            if (seen.has(s.id)) return false;
-            seen.add(s.id);
+          allStrains = allStrains.filter((st) => {
+            if (seen.has(st.id)) return false;
+            seen.add(st.id);
             return true;
           });
         } else {
-          // overwrite
+          // Overwrite
           stores = parsed.stores;
           allStrains = parsed.strains;
         }
         renderStoreButtons();
         renderAddStrainForm();
         renderStoreView();
-        alert("Data imported!");
+        alert("Import successful!");
       } catch (err) {
         console.error(err);
-        alert("Error reading JSON file. Must be valid {stores, strains}.");
+        alert("Error reading JSON file.");
       }
     };
     reader.readAsText(file);
