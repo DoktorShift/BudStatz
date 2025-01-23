@@ -2,125 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BudStats</title>
-
-  <!-- Tailwind CDN (v3) -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css"
-    rel="stylesheet"
-  />
 
   <!-- Our custom CSS -->
   <link rel="stylesheet" href="styles.css" />
-</head>
-<body class="min-h-screen bg-gradient-to-b from-emerald-50 to-emerald-100 dark:from-emerald-950 dark:to-emerald-900">
 
+  <!-- For icons (e.g. burger, close, etc.): We’ll embed inline SVG or references in the JS. -->
+</head>
+<body>
   <!-- MAIN CONTAINER -->
-  <div class="container mx-auto px-4 py-8" id="appContainer">
-    <!-- ============= NAV BAR ============= -->
-    <div class="flex justify-between items-center mb-8">
-      <h1 class="text-4xl font-bold text-emerald-800 dark:text-emerald-200">
-        BudStats
-      </h1>
-      <!-- The "burger menu" to open side sheet -->
-      <button
-        id="sheetTrigger"
-        class="bg-transparent border-none text-gray-700 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-800 p-2 rounded"
-      >
-        <!-- Just an SVG for menu icon -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-             viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16" />
+  <div class="container" id="appContainer">
+
+    <!-- ===== NAV BAR ===== -->
+    <div class="nav-bar">
+      <h1 class="app-title">BudStats</h1>
+      <button class="burger-btn" id="sheetTrigger" title="Open Settings">
+        <!-- Simple 'burger' icon as inline SVG -->
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+             xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
     </div>
 
-    <!-- SIDE SHEET (hidden by default) -->
-    <div
-      id="sideSheet"
-      class="hidden fixed top-0 right-0 w-80 max-w-full h-full bg-white dark:bg-gray-900 shadow-lg p-4 z-50 transform translate-x-full transition-transform"
-    >
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-bold text-emerald-700 dark:text-emerald-300">Settings</h2>
-        <button
-          id="closeSheetBtn"
-          class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-2xl leading-none"
-        >
+    <!-- ===== SIDE SHEET (hidden by default) ===== -->
+    <div class="side-sheet" id="sideSheet">
+      <div class="sheet-header">
+        <h2>Settings</h2>
+        <button class="close-btn" id="closeSheetBtn" title="Close">
           &times;
         </button>
       </div>
 
-      <!-- "Store Selector" Card -->
-      <div class="backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 rounded p-4 mb-6">
-        <h3 class="text-xl font-bold text-emerald-700 dark:text-emerald-300 mb-4">Stores</h3>
-        <div class="flex gap-2 mb-4">
+      <!-- Store Selector -->
+      <div class="sheet-section">
+        <h3>Stores</h3>
+        <div class="add-store">
           <input
             type="text"
             id="newStoreInput"
             placeholder="Add new store..."
-            class="border-emerald-200 focus:border-emerald-500 rounded p-2 flex-1"
           />
-          <button
-            id="addStoreButton"
-            class="border border-emerald-200 text-sm p-2 rounded hover:bg-emerald-50 dark:hover:bg-emerald-800"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                 viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 4v16m8-8H4" />
+          <button id="addStoreButton" class="store-add-btn">
+            <!-- Plus icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14M5 12h14"></path>
             </svg>
           </button>
         </div>
-        <div id="storeButtons" class="flex flex-wrap gap-2"></div>
+        <div id="storeButtons" class="store-buttons"></div>
       </div>
 
-      <!-- Data Actions (Import/Export) -->
-      <div class="backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 rounded p-4">
-        <h3 class="text-xl font-bold text-emerald-700 dark:text-emerald-300 mb-4">
-          Data Management
-        </h3>
-        <div class="flex gap-4">
-          <button
-            id="exportButton"
-            class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded p-2 flex items-center justify-center"
-          >
-            <!-- Download icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none"
-                 viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 4v16m8-8H4" />
-            </svg>
-            Export
-          </button>
-          <button
-            id="importButton"
-            class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded p-2 flex items-center justify-center"
-          >
-            <!-- Upload icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none"
-                 viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 20V4m8 8H4" />
-            </svg>
-            Import
-          </button>
-          <input type="file" id="importFile" accept=".json" class="hidden" />
+      <!-- Data Management (Import/Export) -->
+      <div class="sheet-section">
+        <h3>Data Management</h3>
+        <div class="data-actions">
+          <button id="exportButton" class="export-btn">Export</button>
+          <button id="importButton" class="import-btn">Import</button>
+          <input type="file" id="importFile" accept=".json" class="hidden-file" />
         </div>
       </div>
     </div>
 
-    <!-- MAIN GRID (AddStrainForm + StoreView) -->
-    <div class="grid gap-8 md:grid-cols-[350px,1fr]">
-      <!-- Left: AddStrainForm container -->
-      <div id="addStrainFormContainer" class="space-y-6"></div>
-      <!-- Right: "StoreView" container -->
-      <div id="storeViewContainer" class="space-y-6"></div>
+    <!-- ===== MAIN GRID: (AddStrainForm + StoreView) ===== -->
+    <div class="main-grid">
+      <!-- LEFT: AddStrainForm container -->
+      <div id="addStrainFormContainer" class="left-panel"></div>
+      <!-- RIGHT: StoreView container -->
+      <div id="storeViewContainer" class="right-panel"></div>
     </div>
+
   </div>
 
-  <!-- Our main logic -->
+  <!-- Main logic -->
   <script src="app.js"></script>
 </body>
 </html>
