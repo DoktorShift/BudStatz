@@ -45,7 +45,6 @@ body {
   padding: 0.5rem;
   transition: transform 0.2s;
 }
-
 .burger-btn:hover {
   transform: scale(1.1);
 }
@@ -69,7 +68,6 @@ body {
   flex-direction: column;
   padding: 1rem;
 }
-
 .side-sheet.show {
   transform: translateX(0);
 }
@@ -80,12 +78,10 @@ body {
   align-items: center;
   margin-bottom: 1rem;
 }
-
 .sheet-header h2 {
   font-size: 1.25rem;
   color: #065f46;
 }
-
 .close-btn {
   background: none;
   border: none;
@@ -94,7 +90,6 @@ body {
   cursor: pointer;
   color: #666;
 }
-
 .close-btn:hover {
   color: #333;
 }
@@ -102,20 +97,18 @@ body {
 .sheet-section {
   margin-bottom: 1.5rem;
 }
-
 .sheet-section h3 {
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
   color: #065f46;
 }
 
-/* Store selector area */
+/* store selector area */
 .add-store {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
-
 .add-store input {
   flex: 1;
   padding: 0.4rem;
@@ -123,7 +116,6 @@ body {
   border-radius: 4px;
   outline: none;
 }
-
 .store-add-btn {
   border: 1px solid #ccc;
   background-color: #f0fff4;
@@ -142,13 +134,20 @@ body {
   flex-wrap: wrap;
   gap: 0.5rem;
 }
+.store-item-btn {
+  border: 1px solid #ccc;
+  background-color: #f0fff4;
+  border-radius: 4px;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
 
 /* data actions */
 .data-actions {
   display: flex;
   gap: 1rem;
 }
-
 .data-actions button {
   flex: 1;
   border: none;
@@ -159,11 +158,9 @@ body {
   cursor: pointer;
   transition: filter 0.2s;
 }
-
 .data-actions button:hover {
   filter: brightness(0.9);
 }
-
 .hidden-file {
   display: none;
 }
@@ -176,15 +173,13 @@ body {
   grid-template-columns: 1fr;
   gap: 1rem;
 }
-
 @media (min-width: 768px) {
   .main-grid {
     grid-template-columns: 350px 1fr;
   }
 }
-
-/* left + right panels (just spacing) */
-.left-panel, .right-panel {
+.left-panel,
+.right-panel {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -206,19 +201,16 @@ body {
   font-size: 1.25rem;
   color: #065f46;
 }
-
 .add-form-group {
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
 }
-
 .add-form-group label {
   font-weight: 600;
   margin-bottom: 0.3rem;
   color: #065f46;
 }
-
 .add-form-group input[type="text"],
 .add-form-group select,
 .add-form-group input[type="file"] {
@@ -226,18 +218,15 @@ body {
   border-radius: 4px;
   padding: 0.4rem;
 }
-
 .add-form-group input[type="range"] {
   margin-top: 0.25rem;
 }
-
 .range-value {
   text-align: right;
   font-size: 0.8rem;
   color: #666;
   margin-top: 0.25rem;
 }
-
 .add-form-submit {
   width: 100%;
   padding: 0.6rem;
@@ -262,7 +251,6 @@ body {
   gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
-
 .view-mode-btn {
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -271,27 +259,23 @@ body {
   background-color: #f0fff4;
   transition: background 0.2s;
 }
-
 .view-mode-btn.active {
   background-color: #10b981;
   color: #fff;
   border-color: #059669;
 }
-
 .view-mode-btn:hover {
   background-color: #dcfce7;
 }
 
-/* collapsible store group card */
+/* collapsible store group */
 .store-group-card {
   background-color: rgba(255,255,255,0.85);
   border-radius: 4px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   margin-bottom: 1rem;
   overflow: hidden;
-  transition: transform 0.2s;
 }
-
 .store-group-header {
   padding: 0.5rem 1rem;
   border-bottom: 1px solid #eee;
@@ -302,31 +286,26 @@ body {
   background-color: #ecfdf5; /* Light green-ish */
   transition: background-color 0.2s;
 }
-
 .store-group-header:hover {
   background-color: #d1fae5;
 }
-
 .store-group-content {
   padding: 0 1rem;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.2s ease-in-out;
 }
-
 .chevron-icon {
   width: 24px;
   height: 24px;
 }
-
-/* Grid for strains inside each store section */
+/* store group grid */
 .strains-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 0.8rem;
   margin: 0.8rem 0;
 }
-
 @media (min-width: 600px) {
   .strains-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -349,11 +328,9 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   transition: transform 0.3s;
 }
-
 .strain-card:hover {
   transform: translateY(-2px);
 }
-
 .strain-badge {
   position: absolute;
   top: -0.75rem;
@@ -374,15 +351,14 @@ body {
 .strain-card:hover .strain-badge {
   transform: scale(1.1);
 }
-
 .strain-photo {
   width: 100%;
   height: 150px;
   object-fit: cover;
   display: block;
   position: relative;
+  cursor: pointer; /* So user sees clickable for enlarge */
 }
-
 .strain-placeholder {
   width: 100%;
   height: 150px;
@@ -392,25 +368,20 @@ body {
   justify-content: center;
   color: #065f46;
 }
-
-/* card content */
 .strain-card-content {
   padding: 0.8rem;
 }
-
 .strain-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.4rem;
 }
-
 .strain-name {
   font-size: 1rem;
   font-weight: 600;
   color: #065f46;
 }
-
 .strain-type {
   font-size: 0.75rem;
   background-color: #d1fae5;
@@ -418,7 +389,6 @@ body {
   padding: 0.2rem 0.5rem;
   border-radius: 999px;
 }
-
 .strain-store {
   font-size: 0.8rem;
   color: #666;
@@ -435,18 +405,15 @@ body {
   justify-content: space-between;
   margin-bottom: 0.3rem;
 }
-
 .rating-label {
   font-size: 0.8rem;
   color: #555;
 }
-
 .rating-bar-wrapper {
   display: flex;
   align-items: center;
   gap: 0.4rem;
 }
-
 .rating-bar-track {
   width: 80px;
   height: 4px;
@@ -454,7 +421,6 @@ body {
   border-radius: 2px;
   overflow: hidden;
 }
-
 .rating-bar-fill {
   height: 100%;
   transition: width 0.4s ease;
@@ -469,11 +435,9 @@ body {
   transition: opacity 0.3s;
   margin-top: 0.5rem;
 }
-
 .strain-card:hover .strain-actions {
   opacity: 1;
 }
-
 .action-btn {
   border: 1px solid #ccc;
   background-color: #fdfdfd;
@@ -482,21 +446,14 @@ body {
   cursor: pointer;
   transition: background 0.2s;
 }
-
 .action-btn:hover {
   background-color: #f3f3f3;
 }
-
 .action-btn-danger:hover {
   background-color: #ffe2e2;
 }
 
-/* ============================= */
-/* ========== RATING COLORS ==== */
-/* ============================= */
-/* We'll define classes for different rating levels. 
-   We'll set them dynamically in JS. Example: "bg-green" or "bg-orange" ... */
-
+/* rating color classes (for the circle & bars) */
 .bg-gradient-high {
   background: linear-gradient(45deg, #2ecc71, #27ae60);
 }
@@ -511,4 +468,44 @@ body {
 }
 .bg-gradient-bad {
   background: linear-gradient(45deg, #e74c3c, #c0392b);
+}
+
+/* ============================= */
+/* ====== MODAL (IMAGE PREVIEW) */
+/* ============================= */
+.modal {
+  display: none; /* hidden by default */
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.7);
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.modal-close:hover {
+  color: #ddd;
+}
+
+.modal-content-img {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 80%;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  object-fit: contain;
+  margin-top: 5%;
 }
