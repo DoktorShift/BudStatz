@@ -23,6 +23,40 @@ body {
   padding: 1rem;
 }
 
+/* Hide with .hidden class */
+.hidden {
+  display: none;
+}
+
+/* ============================= */
+/* ========== LOADING ========== */
+/* ============================= */
+#loadingScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #f5fff4; /* light background or white */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* on top of everything */
+}
+
+#loadingScreen img {
+  width: 120px;
+  height: auto;
+  animation: pulse 1.5s infinite;
+}
+
+/* simple "pulse" animation to make the logo grow/shrink */
+@keyframes pulse {
+  0% { transform: scale(1.0); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1.0); }
+}
+
 /* ============================= */
 /* ========== NAV BAR ========== */
 /* ============================= */
@@ -134,13 +168,32 @@ body {
   flex-wrap: wrap;
   gap: 0.5rem;
 }
-.store-item-btn {
+.store-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   border: 1px solid #ccc;
   background-color: #f0fff4;
   border-radius: 4px;
   padding: 0.4rem 0.6rem;
-  cursor: pointer;
   font-size: 0.8rem;
+  cursor: default;
+}
+.store-name {
+  margin-right: 0.5rem;
+}
+.delete-store-btn {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0 0.3rem;
+  transition: color 0.2s;
+}
+.delete-store-btn:hover {
+  color: #f33;
 }
 
 /* data actions */
