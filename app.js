@@ -153,9 +153,7 @@ function renderAddStrainForm() {
         <select id="strainType" required>
           <option value="" disabled selected hidden>Select type</option>
           <option value="Indica">Indica</option>
-          <option value="Indica dominant">Indica</option>
           <option value="Sativa">Sativa</option>
-          <option value="Sativa">Sativa dominant</option>
           <option value="Hybrid">Hybrid</option>
         </select>
       </div>
@@ -632,4 +630,86 @@ function initDataActions() {
 
     const link = document.createElement("a");
     link.href = url;
-    link.download = "budstats-data.json"
+    link.download = "budstats-data.json";
+    link.click();
+    URL.revokeObjectURL(url);
+  });
+
+  importBtn.addEventListener("click", () => {
+    importFile.click();
+  });
+
+  importFile.addEventListener("change", (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const parsed = JSON.parse(ev.target.result);
+        if (!parsed.stores || !parsed.strains) {
+          alert("Invalid JSON. Must be {stores:[], strains:[]}");
+          return;
+        }
+        // Merge or Overwrite?
+        if (confirm("Merge data? (Cancel to overwrite)")) {
+          // Merge
+          stores = Array.from(new Set([...stores, ...parsed.stores]));
+          allStrains = [...allStrains, ...parsed.strains];
+          // remove duplicates by ID
+          const seen = new Set();
+          allStrains = allStrains.filter((st) => {
+            if (seen.has(st.id)) return false;
+            seen.add(st.id);
+            return true;
+          });
+        } else {
+          // Overwrite
+          stores = parsed.stores;
+          allStrains = parsed.strains;
+        }
+
+        localStorage.setItem("budstats_stores", JSON.stringify(stores));
+        localStorage.setItem("budstats_strains", JSON.stringify(allStrains));
+
+        renderStoreButtons();
+        renderAddStrainForm();
+        renderStoreView();
+        alert("Import successful!");
+      } catch (err) {
+        console.error(err);
+        alert("Error reading JSON file.");
+      }
+    };
+    reader.readAsText(file);
+  });
+}
+
+/******************************************/
+/**           IMAGE MODAL LOGIC          **/
+/******************************************/
+let modal, modalImg, modalClose;
+function initImageModal() {
+  modal = document.getElementById("imgModal");
+  modalImg = document.getElementById("modalImg");
+  modalClose = document.getElementById("modalClose");
+
+  modalClose.addEventListener("click", () => {
+    closeImageModal();
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      closeImageModal();
+    }
+  });
+}
+
+function openImageModal(imgSrc) {
+  modalImg.src = imgSrc;
+  modal.style.display = "block";
+}
+
+function closeImageModal() {
+  modal.style.display = "none";
+  modalImg.src = "";
+}
