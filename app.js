@@ -173,7 +173,7 @@ function renderAddStrainForm() {
       ${["taste","consistency","smell","effect"].map(attr => `
       <div class="add-form-group">
         <label>${attr.charAt(0).toUpperCase() + attr.slice(1)} (0-10)</label>
-        <input type="range" min="0" max="10" step="0.5" id="${attr}" value="5" />
+        <input type="range" min="0" max="10" step="0.1" id="${attr}" value="5" />
         <div class="range-value" id="${attr}Value">5</div>
       </div>`).join("")}
 
