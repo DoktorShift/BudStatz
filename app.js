@@ -2,7 +2,7 @@
 /**       GLOBAL DEMO DATA + STATE       **/
 /******************************************/
 
-// 1) Attempt to load from localStorage, else use defaults
+// Attempt to load from localStorage, else use defaults
 let savedStores = localStorage.getItem("budstats_stores");
 let savedStrains = localStorage.getItem("budstats_strains");
 
@@ -37,16 +37,19 @@ let allStrains = savedStrains
       },
     ];
 
-// "viewMode" can be "all" or "by-store"
-let viewMode = "by-store";
+let viewMode = "by-store";        // "all" or "by-store"
+let editingStrainId = null;       // track which strain is being edited
 
-// For editing a strain
-let editingStrainId = null;
-
-/******************************************/
-/**             ON LOAD INIT             **/
-/******************************************/
 document.addEventListener("DOMContentLoaded", () => {
+  // 1) Show loading screen for ~2 seconds
+  setTimeout(() => {
+    // hide loading
+    document.getElementById("loadingScreen").style.display = "none";
+    // show app
+    document.getElementById("appContainer").classList.remove("hidden");
+  }, 2000);
+
+  // 2) After that, side sheet logic, store rendering, form, etc.
   initSideSheet();
   renderStoreButtons();
   renderAddStrainForm();
@@ -223,7 +226,7 @@ function renderAddStrainForm() {
   strainForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    // create/replace strain
+    // create or replace strain
     const newOrEditedStrain = {
       id: editingStrainId ? editingStrainId : Date.now().toString(),
       name: strainForm.querySelector("#strainName").value.trim(),
@@ -281,7 +284,7 @@ function renderAddStrainForm() {
 
       // re-render
       renderStoreView();
-      renderAddStrainForm(); // re-init form in "add mode"
+      renderAddStrainForm(); // go back to add mode
     }
   });
 }
@@ -612,6 +615,7 @@ function initDataActions() {
           stores = parsed.stores;
           allStrains = parsed.strains;
         }
+
         // save to localStorage
         localStorage.setItem("budstats_stores", JSON.stringify(stores));
         localStorage.setItem("budstats_strains", JSON.stringify(allStrains));
